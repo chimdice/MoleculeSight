@@ -139,21 +139,39 @@ void Molecule::renderMolecule ()
     for (Atom& atom: atoms) {
         Sphere atomSphere {atom.getRadius(), 20, 20};
         atomSphere.draw();
+        
         std::vector<float> tempTriangles {atomSphere.getTriangles()};
+        std::vector<float> color {atomSphere.getColor()};
+        int pos {1};
+        int size {tempTriangles.size()};
+
+        for (int i = 0; i <size; i++) {
+            if (pos == 1) {
+                tempTriangles[i] = tempTriangles[i]+atom.getXPosition();
+                pos = 2;
+            } else if (pos == 2) {
+                tempTriangles[i] = tempTriangles[i]+atom.getYPosition();
+                pos = 3;
+            } else if (pos == 3) {
+                tempTriangles[i] = tempTriangles[i]+atom.getZPosition();
+                pos = 1;
+            }
+        }
         sphereTriangles.insert(sphereTriangles.end(), tempTriangles.begin(), tempTriangles.end());
+        sphereColor.insert(sphereColor.end(), color.begin(), color.end());
         num += atomSphere.getNumTriangles();
     }
 
     GLuint vertexVbo {0};
-    // GLuint colorVbo {0};
+    GLuint colorVbo {0};
 
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
     
-    // glGenBuffers(1, &colorVbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
+    glGenBuffers(1, &colorVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
 
     GLuint vao {0};
     glGenVertexArrays(1, &vao);
@@ -163,11 +181,11 @@ void Molecule::renderMolecule ()
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    // glEnableVertexAttribArray(1);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glDrawArrays(GL_TRIANGLES, 0, 3*num);
     glDisableVertexAttribArray(0);
-    // glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(1);
 }

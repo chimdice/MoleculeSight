@@ -57,6 +57,7 @@ static void myInit ()
     glFrustum(-1, 1, -1, 1, 2, 10);
     glMatrixMode(GL_MODELVIEW);
 
+
     //lighting
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);

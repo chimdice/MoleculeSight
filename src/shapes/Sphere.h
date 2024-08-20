@@ -32,6 +32,11 @@ class Sphere
             return sphereTriangles;
         }
 
+        std::vector<float> getColor ()
+        {
+            return sphereTrianglesColor;
+        }
+
         int getNumTriangles ()
         {
             return numTriangles;

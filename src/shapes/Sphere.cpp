@@ -65,17 +65,17 @@ void Sphere::generateTriangles()
         for (int j = 0; j < numSectors; j++, k1++, k2++) {
             if (i != 0) {
                 // vertex one
-                sphereTriangles.push_back(normalizedVertices[k1].x);
-                sphereTriangles.push_back(normalizedVertices[k1].y);
-                sphereTriangles.push_back(normalizedVertices[k1].z);
+                sphereTriangles.push_back(vertices[k1].x);
+                sphereTriangles.push_back(vertices[k1].y);
+                sphereTriangles.push_back(vertices[k1].z);
                 //vertex two
-                sphereTriangles.push_back(normalizedVertices[k2].x);
-                sphereTriangles.push_back(normalizedVertices[k2].y);
-                sphereTriangles.push_back(normalizedVertices[k2].z);
+                sphereTriangles.push_back(vertices[k2].x);
+                sphereTriangles.push_back(vertices[k2].y);
+                sphereTriangles.push_back(vertices[k2].z);
                 //vertex three
-                sphereTriangles.push_back(normalizedVertices[k1+1].x);
-                sphereTriangles.push_back(normalizedVertices[k1+1].y);
-                sphereTriangles.push_back(normalizedVertices[k1+1].z);
+                sphereTriangles.push_back(vertices[k1+1].x);
+                sphereTriangles.push_back(vertices[k1+1].y);
+                sphereTriangles.push_back(vertices[k1+1].z);
                 //color
                 sphereTrianglesColor.insert(sphereTrianglesColor.end(), {1,0,0, 1,0,0, 1,0,0});
                 numTriangles += 1;
@@ -83,17 +83,17 @@ void Sphere::generateTriangles()
 
             if (i != (numStacks-1)) {
                  // vertex one
-                sphereTriangles.push_back(normalizedVertices[k1+1].x);
-                sphereTriangles.push_back(normalizedVertices[k1+1].y);
-                sphereTriangles.push_back(normalizedVertices[k1+1].z);
+                sphereTriangles.push_back(vertices[k1+1].x);
+                sphereTriangles.push_back(vertices[k1+1].y);
+                sphereTriangles.push_back(vertices[k1+1].z);
                 //vertex two
-                sphereTriangles.push_back(normalizedVertices[k2].x);
-                sphereTriangles.push_back(normalizedVertices[k2].y);
-                sphereTriangles.push_back(normalizedVertices[k2].z);
+                sphereTriangles.push_back(vertices[k2].x);
+                sphereTriangles.push_back(vertices[k2].y);
+                sphereTriangles.push_back(vertices[k2].z);
                 //vertex three
-                sphereTriangles.push_back(normalizedVertices[k2+1].x);
-                sphereTriangles.push_back(normalizedVertices[k2+1].y);
-                sphereTriangles.push_back(normalizedVertices[k2+1].z);
+                sphereTriangles.push_back(vertices[k2+1].x);
+                sphereTriangles.push_back(vertices[k2+1].y);
+                sphereTriangles.push_back(vertices[k2+1].z);
                 //color
                 sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0,0,1, 0,0,1, 0,0,1});
                 numTriangles += 1;
@@ -106,37 +106,4 @@ void Sphere::draw()
 {
     buildVertices();
     generateTriangles();
-
-    // std::vector<float> testPoint {
-    //     0,0,0, 1,1,0, -1,1,0,
-    //     0,0,0, -1,-1,0, 1,-1,0
-    // };
-
-    // GLuint vertexVbo {0};
-    // GLuint colorVbo {0};
-
-    // glGenBuffers(1, &vertexVbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    // glBufferData(GL_ARRAY_BUFFER, numTriangles*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
-    
-    // glGenBuffers(1, &colorVbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glBufferData(GL_ARRAY_BUFFER, numTriangles*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
-
-    // GLuint vao {0};
-    // glGenVertexArrays(1, &vao);
-    // glBindVertexArray(vao);
-
-    // glEnableVertexAttribArray(0);
-    // glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    // glEnableVertexAttribArray(1);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    // glDrawArrays(GL_TRIANGLES, 0, 3*numTriangles);
-    // glDisableVertexAttribArray(0);
-    // glDisableVertexAttribArray(1);
-
 }
