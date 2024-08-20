@@ -26,3 +26,8 @@ void Atom::printMass ()
 {
     std::cout << mass << " a.u. \n";
 };
+
+void Atom::renderAtom ()
+{
+    
+}

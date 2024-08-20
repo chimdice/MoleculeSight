@@ -43,8 +43,7 @@ static void RenderCB ()
 
     glRotatef(T, 0, 1, 0);
 
-    
-
+    H2.renderMolecule();
 
     glutSwapBuffers();
 }

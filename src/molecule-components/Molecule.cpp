@@ -7,6 +7,7 @@
 #include "Atom.cpp"
 #include "Molecule.h"
 
+
 Molecule::Molecule (std::vector<Atom> &atomList)
 {
     //atoms
@@ -129,4 +130,44 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
     } else {
         std::cout<< "no torsion angle exisits \n";
     }
+}
+
+void Molecule::renderMolecule ()
+{
+    int num {0};
+
+    for (Atom& atom: atoms) {
+        Sphere atomSphere {atom.getRadius(), 20, 20};
+        atomSphere.draw();
+        std::vector<float> tempTriangles {atomSphere.getTriangles()};
+        sphereTriangles.insert(sphereTriangles.end(), tempTriangles.begin(), tempTriangles.end());
+        num += atomSphere.getNumTriangles();
+    }
+
+    GLuint vertexVbo {0};
+    // GLuint colorVbo {0};
+
+    glGenBuffers(1, &vertexVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
+    glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
+    
+    // glGenBuffers(1, &colorVbo);
+    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    // glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
+
+    GLuint vao {0};
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    // glEnableVertexAttribArray(1);
+    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, 3*num);
+    glDisableVertexAttribArray(0);
+    // glDisableVertexAttribArray(1);
 }

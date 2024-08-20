@@ -8,6 +8,9 @@
 //#include "bond3D.cpp"
 //#include "angle3D.cpp"
 #include "torsion3D.cpp"
+#include "../shapes/Sphere.h"
+#include "../shapes/Sphere.cpp"
+
 
 class Molecule
 {
@@ -20,6 +23,8 @@ class Molecule
 
         int mass {};
 
+        std::vector<float> sphereTriangles {};
+
     
     public:
         Molecule (std::vector<Atom> &atomList);
@@ -28,7 +33,7 @@ class Molecule
         void bondLength(int pos1, int pos2);
         void bondAngle(int pos1, int pos2, int pos3);
         void torsionAngle(int pos1, int pos2, int pos3, int pos4);
-
+        void renderMolecule();
 
 
         // std::string getSequence ()

@@ -2,6 +2,8 @@
 #define ATOM_H
 
 #include <iostream>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 class Atom
 {
@@ -22,6 +24,7 @@ class Atom
         void printCoordinates ();
         void printParticles ();
         void printMass ();
+        void renderAtom ();
 
 
         int getProtons ()
