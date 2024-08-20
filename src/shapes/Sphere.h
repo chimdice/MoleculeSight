@@ -4,7 +4,7 @@
 #include <vector>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "Math3d.h"
+#include "../Math3d.h"
 
 class Sphere
 {
