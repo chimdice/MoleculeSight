@@ -33,8 +33,8 @@ static void RenderCB ()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glLightfv(GL_LIGHT0, GL_POSITION, LightPos);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, LightColor);
+    // glLightfv(GL_LIGHT0, GL_POSITION, LightPos);
+    // glLightfv(GL_LIGHT0, GL_DIFFUSE, LightColor);
     //windowCamera.Matrix();
     gluLookAt(0,1,3,0,0,0,0,1,0);
 
@@ -72,13 +72,6 @@ int main (int argc, char** argv)
     };
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     myInit();
-
-    H2.printMass();
-    H2.bondLength(0,2);
-    H2.bondLength(0,1);
-    H2.bondLength(1,2);
-    H2.bondAngle(0, 1, 2);
-    H2.torsionAngle(0, 1, 2, 3);
 
     glutDisplayFunc(RenderCB);
     glutMainLoop();

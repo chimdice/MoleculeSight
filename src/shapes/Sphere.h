@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include "../Math3d.h"
+#include "../utility/utility.h"
 
 class Sphere
 {
