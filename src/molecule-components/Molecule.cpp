@@ -145,6 +145,9 @@ void Molecule::renderMolecule ()
     readFile(vertexShaderFilePath, vertexShaderFile);
     readFile(fragmentShaderFilePath, fragmentShaderFile);
 
+    unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
+    glUseProgram(shaderProgram);
+
     for (Atom& atom: atoms) {
         Sphere atomSphere {atom.getRadius(), 20, 20};
         atomSphere.draw();
@@ -178,9 +181,9 @@ void Molecule::renderMolecule ()
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
     
-    // glGenBuffers(1, &colorVbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
+    glGenBuffers(1, &colorVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
 
     GLuint vao {0};
     glGenVertexArrays(1, &vao);
@@ -190,16 +193,13 @@ void Molecule::renderMolecule ()
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
 
-    // glEnableVertexAttribArray(1);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     //vertex and fragment shader learn
-    
-    unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
-    glUseProgram(shaderProgram);
 
     glDrawArrays(GL_TRIANGLES, 0, 3*num);
     glDisableVertexAttribArray(0);
-    // glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(1);
 }
