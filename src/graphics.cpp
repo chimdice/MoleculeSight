@@ -6,6 +6,7 @@
 #include "molecule-components/Molecule.h"
 #include "molecule-components/Molecule.cpp"
 #include "utility/Camera.cpp"
+#include "utility/MatrixTransform.cpp"
 
 
 GLfloat T {0};
@@ -73,6 +74,14 @@ int main (int argc, char** argv)
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     myInit();
 
+    Matrix4 id {1};
+    Vector3f test {1,2,3};
+    Vector3f test2 {2};
+    MatrixTransform idTransfrom {id};
+    idTransfrom.print();
+    idTransfrom.translate(test);
+    idTransfrom.scale(test2);
+    idTransfrom.print();
     glutDisplayFunc(RenderCB);
     glutMainLoop();
     return 0;
