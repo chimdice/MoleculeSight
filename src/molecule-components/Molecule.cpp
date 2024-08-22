@@ -6,6 +6,7 @@
 #include "Atom.h"
 #include "Atom.cpp"
 #include "Molecule.h"
+#include "../utility/MatrixTransform.cpp"
 
 
 Molecule::Molecule (std::vector<Atom> &atomList)
@@ -146,7 +147,17 @@ void Molecule::renderMolecule ()
     readFile(fragmentShaderFilePath, fragmentShaderFile);
 
     unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
+    unsigned int transformLocation {glGetUniformLocation(shaderProgram, "transform")};
     glUseProgram(shaderProgram);
+
+    Matrix4 id {1};
+    Vector3f test {0.1};
+    MatrixTransform idTransfrom {id};
+    idTransfrom.scale(test);
+    float finalTransform[16] {};
+    idTransfrom.fillArray(finalTransform);
+
+    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, &finalTransform[0]);
 
     for (Atom& atom: atoms) {
         Sphere atomSphere {atom.getRadius(), 20, 20};

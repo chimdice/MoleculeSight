@@ -61,3 +61,10 @@ void MatrixTransform::print()
 {
     currentMatrix.print();
 }
+
+void MatrixTransform::fillArray(float inMatrix[16])
+{
+    for (int i = 0; i < 16; i++) {
+            inMatrix[i] = currentMatrix.matrix[i];
+        }
+}

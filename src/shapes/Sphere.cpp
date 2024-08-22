@@ -77,7 +77,7 @@ void Sphere::generateTriangles()
                 sphereTriangles.push_back(vertices[k1+1].y);
                 sphereTriangles.push_back(vertices[k1+1].z);
                 //color
-                sphereTrianglesColor.insert(sphereTrianglesColor.end(), {1,0,0, 1,0,0, 1,0,0});
+                sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0.3,0.5,0, 0.3,0.5,0, 0.3,0.5,0});
                 numTriangles += 1;
             }
 
@@ -95,7 +95,7 @@ void Sphere::generateTriangles()
                 sphereTriangles.push_back(vertices[k2+1].y);
                 sphereTriangles.push_back(vertices[k2+1].z);
                 //color
-                sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0,0,1, 0,0,1, 0,0,1});
+                sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0.3,0.5,0, 0.3,0.5,0, 0.3,0.5,0});
                 numTriangles += 1;
             }
         }

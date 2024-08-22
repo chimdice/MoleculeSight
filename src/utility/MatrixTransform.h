@@ -16,6 +16,8 @@ class MatrixTransform
         void scale(Vector3f vector);
         void rotate(Vector3f vector, float angle);
         void print();
+        void fillArray(float array[16]);
+
     
 };
 
