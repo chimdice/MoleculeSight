@@ -14,6 +14,7 @@ class MatrixTransform
         MatrixTransform(Matrix4 matrix);
         void translate(Vector3f vector);
         void scale(Vector3f vector);
+        void rotate(Vector3f vector, float angle);
         void print();
     
 };

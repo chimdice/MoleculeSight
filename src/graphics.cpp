@@ -75,12 +75,10 @@ int main (int argc, char** argv)
     myInit();
 
     Matrix4 id {1};
-    Vector3f test {1,2,3};
-    Vector3f test2 {2};
+    Vector3f test {1,0,0};
     MatrixTransform idTransfrom {id};
     idTransfrom.print();
-    idTransfrom.translate(test);
-    idTransfrom.scale(test2);
+    idTransfrom.rotate(test, 90);
     idTransfrom.print();
     glutDisplayFunc(RenderCB);
     glutMainLoop();
