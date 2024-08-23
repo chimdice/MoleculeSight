@@ -12,13 +12,9 @@ GLfloat T {0};
 
 //Hydrogen Atom
 Atom h1(1, 1, 1, .37, 1, 0, 0, 0);
-Atom h2(1, 1, 1, .37, 1, 0.7, 0, 0);
-Atom h3(1, 1, 1, .37, 1, 0.7, 0.7, 0);
-Atom h4(1, 1, 1, .37, 1, 0.7, 0.7, 0.7);
-
 
 //H2 molecule
-std::vector<Atom> H2Atoms {h1, h2, h3, h4};
+std::vector<Atom> H2Atoms {h1};
 Molecule H2 (H2Atoms);
 
 // Camera

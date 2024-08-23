@@ -10,10 +10,11 @@
 class Sphere
 {
     private:
-        std::vector<Vector3f> vertices {};
-        std::vector<Vector3f> normalizedVertices {};
-        std::vector<float> sphereTriangles {};
+        std::vector<Vector4f> vertices {};
+        std::vector<Vector4f> normalizedVertices {};
+        std::vector<float> vertexVector {};
         std::vector<float> sphereTrianglesColor {};
+        std::vector<int> vertexIndex {};
 
         float radius {};
         float numSectors {};
@@ -28,14 +29,19 @@ class Sphere
         Sphere(float radius, float numSectors, float numStacks);
         void draw();
 
-        std::vector<float> getTriangles ()
+        std::vector<float> getVertex ()
         {
-            return sphereTriangles;
+            return vertexVector;
         }
 
         std::vector<float> getColor ()
         {
             return sphereTrianglesColor;
+        }
+
+        std::vector<int> getVertexIndex ()
+        {
+            return vertexIndex;
         }
 
         int getNumTriangles ()

@@ -23,7 +23,8 @@ class Molecule
 
         int mass {};
 
-        std::vector<float> sphereTriangles {};
+        std::vector<float> sphereVertex {};
+        std::vector<int> sphereVertexIndex {};
         std::vector<float> sphereColor {};
 
     

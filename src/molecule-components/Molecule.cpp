@@ -151,50 +151,74 @@ void Molecule::renderMolecule ()
     glUseProgram(shaderProgram);
 
     Matrix4 id {1};
-    Vector3f test {0.1};
+    Vector3f test {1};
+    Vector3f test1 {1,0,0};
+    Vector3f test2 {0,0,-1};
     MatrixTransform idTransfrom {id};
+    idTransfrom.translate(test2);
     idTransfrom.scale(test);
+    //idTransfrom.rotate(test1, 90);
     float finalTransform[16] {};
     idTransfrom.fillArray(finalTransform);
 
     glUniformMatrix4fv(transformLocation, 1, GL_FALSE, &finalTransform[0]);
 
     for (Atom& atom: atoms) {
-        Sphere atomSphere {atom.getRadius(), 20, 20};
+        Sphere atomSphere {atom.getRadius(), 10, 10};
         atomSphere.draw();
         
-        std::vector<float> tempTriangles {atomSphere.getTriangles()};
+        std::vector<float> tempTriangles {atomSphere.getVertex()};
+        std::vector<int> tempVertexIndex {atomSphere.getVertexIndex()};
         std::vector<float> color {atomSphere.getColor()};
         int pos {1};
-        int size {tempTriangles.size()};
+        int size {color.size()};
 
-        for (int i = 0; i <size; i++) {
-            if (pos == 1) {
-                tempTriangles[i] = tempTriangles[i]+atom.getXPosition();
-                pos = 2;
-            } else if (pos == 2) {
-                tempTriangles[i] = tempTriangles[i]+atom.getYPosition();
-                pos = 3;
-            } else if (pos == 3) {
-                tempTriangles[i] = tempTriangles[i]+atom.getZPosition();
-                pos = 1;
-            }
-        }
-        sphereTriangles.insert(sphereTriangles.end(), tempTriangles.begin(), tempTriangles.end());
+        // for (int i = 0; i <size; i++) {
+        //     if (pos == 1) {
+        //         tempTriangles[i] = tempTriangles[i]+atom.getXPosition();
+        //         pos = 2;
+        //     } else if (pos == 2) {
+        //         tempTriangles[i] = tempTriangles[i]+atom.getYPosition();
+        //         pos = 3;
+        //     } else if (pos == 3) {
+        //         tempTriangles[i] = tempTriangles[i]+atom.getZPosition();
+        //         pos = 1;
+        //     }
+        //}
+        sphereVertex.insert(sphereVertex.end(), tempTriangles.begin(), tempTriangles.end());
+        sphereVertexIndex.insert(sphereVertexIndex.end(), tempVertexIndex.begin(), tempVertexIndex.end());
         sphereColor.insert(sphereColor.end(), color.begin(), color.end());
         num += atomSphere.getNumTriangles();
     }
 
+    std::cout << sphereVertexIndex.size()/num <<'\n';
+
+    std::vector<float> testSphere {};
+
+    for (int i = 0; i < sphereVertexIndex.size(); i++){
+        float index {sphereVertexIndex[i]};
+        testSphere.push_back(sphereVertex[index]);
+    }
+
     GLuint vertexVbo {0};
     GLuint colorVbo {0};
+    GLuint ibo {0};
+
+    // glGenBuffers(1, &vertexVbo);
+    // glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
+    // glBufferData(GL_ARRAY_BUFFER, testSphere.size()*sizeof(float), &testSphere.front(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereTriangles.front(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertex.size()*sizeof(float), &sphereVertex.front(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereVertexIndex.size()*sizeof(int), &sphereVertexIndex.front(), GL_STATIC_DRAW);
     
-    glGenBuffers(1, &colorVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
+    // glGenBuffers(1, &colorVbo);
+    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    // glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
 
     GLuint vao {0};
     glGenVertexArrays(1, &vao);
@@ -202,15 +226,17 @@ void Molecule::renderMolecule ()
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    // glEnableVertexAttribArray(1);
+    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     //vertex and fragment shader learn
 
-    glDrawArrays(GL_TRIANGLES, 0, 3*num);
+    //glDrawArrays(GL_TRIANGLES, 0, 3*num);
+    glDrawElements(GL_TRIANGLES, sphereVertexIndex.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+    // glDisableVertexAttribArray(1);
 }
