@@ -157,7 +157,7 @@ void Molecule::renderMolecule ()
     MatrixTransform idTransfrom {id};
     idTransfrom.translate(test2);
     idTransfrom.scale(test);
-    //idTransfrom.rotate(test1, 90);
+    idTransfrom.rotate(test1, 90);
     float finalTransform[16] {};
     idTransfrom.fillArray(finalTransform);
 
@@ -173,18 +173,6 @@ void Molecule::renderMolecule ()
         int pos {1};
         int size {color.size()};
 
-        // for (int i = 0; i <size; i++) {
-        //     if (pos == 1) {
-        //         tempTriangles[i] = tempTriangles[i]+atom.getXPosition();
-        //         pos = 2;
-        //     } else if (pos == 2) {
-        //         tempTriangles[i] = tempTriangles[i]+atom.getYPosition();
-        //         pos = 3;
-        //     } else if (pos == 3) {
-        //         tempTriangles[i] = tempTriangles[i]+atom.getZPosition();
-        //         pos = 1;
-        //     }
-        //}
         sphereVertex.insert(sphereVertex.end(), tempTriangles.begin(), tempTriangles.end());
         sphereVertexIndex.insert(sphereVertexIndex.end(), tempVertexIndex.begin(), tempVertexIndex.end());
         sphereColor.insert(sphereColor.end(), color.begin(), color.end());
@@ -195,34 +183,26 @@ void Molecule::renderMolecule ()
 
     std::vector<float> testSphere {};
 
-    for (int i = 0; i < sphereVertexIndex.size(); i++){
-        float index {sphereVertexIndex[i]};
-        testSphere.push_back(sphereVertex[index]);
-    }
 
     GLuint vertexVbo {0};
     GLuint colorVbo {0};
     GLuint ibo {0};
 
-    // glGenBuffers(1, &vertexVbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    // glBufferData(GL_ARRAY_BUFFER, testSphere.size()*sizeof(float), &testSphere.front(), GL_STATIC_DRAW);
+    GLuint vao {0};
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glBufferData(GL_ARRAY_BUFFER, sphereVertex.size()*sizeof(float), &sphereVertex.front(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertex.size()*sizeof(float), sphereVertex.data(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereVertexIndex.size()*sizeof(int), &sphereVertexIndex.front(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereVertexIndex.size()*sizeof(int), sphereVertexIndex.data(), GL_STATIC_DRAW);
     
     // glGenBuffers(1, &colorVbo);
     // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
     // glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
-
-    GLuint vao {0};
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
@@ -235,8 +215,9 @@ void Molecule::renderMolecule ()
 
     //vertex and fragment shader learn
 
-    //glDrawArrays(GL_TRIANGLES, 0, 3*num);
+    glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, sphereVertexIndex.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);
     // glDisableVertexAttribArray(1);
+
 }

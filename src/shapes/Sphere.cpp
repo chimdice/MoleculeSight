@@ -56,7 +56,7 @@ void Sphere::buildVertices ()
             vertexVector.push_back(y);
             vertexVector.push_back(z);
 
-            vertexIndex += 3;
+            vertexIndex += 1;
         }
     }
 
@@ -75,16 +75,10 @@ void Sphere::generateTriangles()
             if (i != 0) {
                 // vertex one
                 vertexIndex.push_back(vertices[k1].a);
-                vertexIndex.push_back(vertices[k1].a + 1);
-                vertexIndex.push_back(vertices[k1].a + 2);
                 //vertex two
                 vertexIndex.push_back(vertices[k2].a);
-                vertexIndex.push_back(vertices[k2].a + 1);
-                vertexIndex.push_back(vertices[k2].a + 2);
                 //vertex three
                 vertexIndex.push_back(vertices[k1+1].a);
-                vertexIndex.push_back(vertices[k1+1].a + 1);
-                vertexIndex.push_back(vertices[k1+1].a + 2);
                 //color
                 sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0.3,0.5,0, 0.3,0.5,0, 0.3,0.5,0});
                 numTriangles += 1;
@@ -93,16 +87,10 @@ void Sphere::generateTriangles()
             if (i != (numStacks-1)) {
                 // vertex one
                 vertexIndex.push_back(vertices[k1+1].a);
-                vertexIndex.push_back(vertices[k1+1].a + 1);
-                vertexIndex.push_back(vertices[k1+1].a + 2);
                 //vertex two
                 vertexIndex.push_back(vertices[k2].a);
-                vertexIndex.push_back(vertices[k2].a + 1);
-                vertexIndex.push_back(vertices[k2].a + 2);
                 //vertex three
                 vertexIndex.push_back(vertices[k2+1].a);
-                vertexIndex.push_back(vertices[k2+1].a + 1);
-                vertexIndex.push_back(vertices[k2+1].a + 2);
                 //color
                 sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0.3,0.5,0, 0.3,0.5,0, 0.3,0.5,0});
                 numTriangles += 1;
