@@ -56,9 +56,16 @@ void Sphere::buildVertices ()
             vertexVector.push_back(y);
             vertexVector.push_back(z);
 
-            vertexVector.push_back(0.1);
-            vertexVector.push_back(0.4);
-            vertexVector.push_back(0.7);
+            if (i%2 == 0) {
+                vertexVector.push_back(0.1);
+                vertexVector.push_back(0.4);
+                vertexVector.push_back(0.7);
+            } else {
+                vertexVector.push_back(0.7);
+                vertexVector.push_back(0.2);
+                vertexVector.push_back(0.5);
+            }
+            
 
             vertexIndex += 1;
         }

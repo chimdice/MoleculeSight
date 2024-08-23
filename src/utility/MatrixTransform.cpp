@@ -55,6 +55,20 @@ void MatrixTransform::rotate(Vector3f vector, float angle)
     currentMatrix.multiply(rotate.matrix);
 }
 
+void MatrixTransform::createProjection(float left, float right, float bottom, float top, float near, float far)
+{
+    Matrix4 projection(1);
+    projection.matrix[0] = (2*near) / (right - left);
+    projection.matrix[2] = (right + left) / (right - left);
+    projection.matrix[5] = (2*near) / (top - bottom);
+    projection.matrix[6] = (top + bottom) / (top - bottom);
+    projection.matrix[10] = -(far+near) / (far- near);
+    projection.matrix[11] = -(2*far*near) / (far - near);
+    projection.matrix[14] = -1;
+
+    currentMatrix.multiply(projection.matrix);
+}
+
 void MatrixTransform::print()
 {
     currentMatrix.print();

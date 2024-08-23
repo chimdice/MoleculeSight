@@ -45,7 +45,7 @@ static void myInit ()
     glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-1, 1, -1, 1, 2, 10);
+    //glFrustum(-1, 1, -1, 1, 2, 10);
     glMatrixMode(GL_MODELVIEW);
 
     //lighting
