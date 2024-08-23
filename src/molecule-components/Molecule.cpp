@@ -163,29 +163,24 @@ void Molecule::renderMolecule ()
 
     glUniformMatrix4fv(transformLocation, 1, GL_FALSE, &finalTransform[0]);
 
+    //creating spheres
     for (Atom& atom: atoms) {
         Sphere atomSphere {atom.getRadius(), 10, 10};
         atomSphere.draw();
         
         std::vector<float> tempTriangles {atomSphere.getVertex()};
         std::vector<int> tempVertexIndex {atomSphere.getVertexIndex()};
-        std::vector<float> color {atomSphere.getColor()};
         int pos {1};
-        int size {color.size()};
 
         sphereVertex.insert(sphereVertex.end(), tempTriangles.begin(), tempTriangles.end());
         sphereVertexIndex.insert(sphereVertexIndex.end(), tempVertexIndex.begin(), tempVertexIndex.end());
-        sphereColor.insert(sphereColor.end(), color.begin(), color.end());
         num += atomSphere.getNumTriangles();
     }
-
-    std::cout << sphereVertexIndex.size()/num <<'\n';
 
     std::vector<float> testSphere {};
 
 
     GLuint vertexVbo {0};
-    GLuint colorVbo {0};
     GLuint ibo {0};
 
     GLuint vao {0};
@@ -199,25 +194,18 @@ void Molecule::renderMolecule ()
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereVertexIndex.size()*sizeof(int), sphereVertexIndex.data(), GL_STATIC_DRAW);
-    
-    // glGenBuffers(1, &colorVbo);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glBufferData(GL_ARRAY_BUFFER, num*sizeof(float)*9, &sphereColor.front(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)(sizeof(float)*3));
 
-    // glEnableVertexAttribArray(1);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    //vertex and fragment shader learn
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, sphereVertexIndex.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);
-    // glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(1);
 
 }

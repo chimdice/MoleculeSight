@@ -56,6 +56,10 @@ void Sphere::buildVertices ()
             vertexVector.push_back(y);
             vertexVector.push_back(z);
 
+            vertexVector.push_back(0.1);
+            vertexVector.push_back(0.4);
+            vertexVector.push_back(0.7);
+
             vertexIndex += 1;
         }
     }
@@ -79,8 +83,6 @@ void Sphere::generateTriangles()
                 vertexIndex.push_back(vertices[k2].a);
                 //vertex three
                 vertexIndex.push_back(vertices[k1+1].a);
-                //color
-                sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0.3,0.5,0, 0.3,0.5,0, 0.3,0.5,0});
                 numTriangles += 1;
             }
 
@@ -91,8 +93,6 @@ void Sphere::generateTriangles()
                 vertexIndex.push_back(vertices[k2].a);
                 //vertex three
                 vertexIndex.push_back(vertices[k2+1].a);
-                //color
-                sphereTrianglesColor.insert(sphereTrianglesColor.end(), {0.3,0.5,0, 0.3,0.5,0, 0.3,0.5,0});
                 numTriangles += 1;
             }
         }

@@ -52,8 +52,6 @@ void MatrixTransform::rotate(Vector3f vector, float angle)
     rotate.matrix[9] = minusCosAngle*rY*rZ + sinAngle*rX;
     rotate.matrix[10] = cosAngle + rZ*rZ*minusCosAngle;
 
-    rotate.print();
-
     currentMatrix.multiply(rotate.matrix);
 }
 
