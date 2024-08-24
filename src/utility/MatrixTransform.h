@@ -15,7 +15,7 @@ class MatrixTransform
         void translate(Vector3f vector);
         void scale(Vector3f vector);
         void rotate(Vector3f vector, float angle);
-        void createProjection(float left, float right, float bottom, float top, float near, float far);
+        void createProjection(float fov, float aspectRation, float front, float back);
         void print();
         void fillArray(float array[16]);
 

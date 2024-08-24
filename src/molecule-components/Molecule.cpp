@@ -177,7 +177,15 @@ void Molecule::renderMolecule ()
         num += atomSphere.getNumTriangles();
     }
 
-    std::vector<float> testSphere {};
+    std::vector<float> testTriangle {
+        -0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,
+        0.0f,0.8f,0.0f,0.0f,1.0f,0.0f,
+        0.5f,0.5f,0.0f,0.0f,0.0f,1.0f
+    };
+
+    std::vector<int> testIndex {
+        0,1,2
+    };
 
 
     GLuint vertexVbo {0};
@@ -189,11 +197,11 @@ void Molecule::renderMolecule ()
 
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glBufferData(GL_ARRAY_BUFFER, sphereVertex.size()*sizeof(float), sphereVertex.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, testTriangle.size()*sizeof(float), testTriangle.data(), GL_STATIC_DRAW);
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereVertexIndex.size()*sizeof(int), sphereVertexIndex.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, testIndex.size()*sizeof(int), testIndex.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -204,7 +212,7 @@ void Molecule::renderMolecule ()
 
 
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, sphereVertexIndex.size(), GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, testIndex.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
