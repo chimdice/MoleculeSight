@@ -57,11 +57,12 @@ void MatrixTransform::rotate(Vector3f vector, float angle)
 
 void MatrixTransform::createProjection(float fov, float aspectRatio, float near, float far)
 {
-    float fovRad {fov * (3.14159265359/180)};
-    float tangent {std::tan(fovRad/2)};
+    float fovRad {(fov/2) * (3.14159265359/180)};
+    float tangent {std::tan(fovRad)};
     float scaleFactor {1/tangent};
     float top {near*tangent};
     float right {top*aspectRatio};
+    float zRange {far - near};
 
 
     Matrix4 projection(1);
@@ -73,11 +74,11 @@ void MatrixTransform::createProjection(float fov, float aspectRatio, float near,
     // projection.matrix[11] = -(2*far*near) / (far - near);
     // projection.matrix[14] = -1;
 
-    projection.matrix[0] = scaleFactor;
+    projection.matrix[0] = scaleFactor*(1/aspectRatio);
     projection.matrix[5] = scaleFactor;
-    projection.matrix[10] = -(far/(far-near));
-    projection.matrix[11] = -1;
-    projection.matrix[14] = -((far*near)/(far-near));
+    projection.matrix[10] = ((-far)/(zRange));
+    projection.matrix[11] = ((-near*far)/(zRange));
+    projection.matrix[14] = 1;
     projection.matrix[15] = 0;
 
     currentMatrix.multiply(projection.matrix);

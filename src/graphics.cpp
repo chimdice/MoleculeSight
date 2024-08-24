@@ -54,19 +54,20 @@ static void RenderCB ()
     Vector3f rotateModel{1.0f, 0.0f, 0.0f};
     Vector3f scaleDown {0.5};
     MatrixTransform modelTransform {model};
-    modelTransform.rotate(rotateModel, -55.0f);
+    //modelTransform.rotate(rotateModel, -55.0f);
     modelTransform.scale(scaleDown);
 
     //view matrix
     Matrix4 view {1.0f};
-    Vector3f translateView{0.0f, 0.0f, -1.0f};
+    Vector3f translateView{0.0f, 0.0f, -3.0f};
     MatrixTransform viewTransform {view};
     viewTransform.translate(translateView);
 
     //projection matrix
     Matrix4 proj {1.0f};
     MatrixTransform projTransform {proj};
-    projTransform.createProjection(45, 600/600, 0.1, 100);
+    projTransform.createProjection(90, 600/600, 1, 100);
+    projTransform.print();
 
     int modelLocation {glGetUniformLocation(shaderProgram, "model")};
     int viewLocation {glGetUniformLocation(shaderProgram, "view")};
