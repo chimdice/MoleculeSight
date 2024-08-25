@@ -18,6 +18,7 @@ class MatrixTransform
         void createProjection(float fov, float aspectRation, float front, float back);
         void print();
         void fillArray(float array[16]);
+        Matrix4 getMatrix();
 
     
 };

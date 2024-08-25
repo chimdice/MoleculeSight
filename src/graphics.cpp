@@ -29,13 +29,15 @@ static void RenderCB ()
     //H2.renderMolecule();
 
     std::vector<float> testTriangle {
-        -0.5f,-0.5f,-1.0f,1.0f,0.0f,0.0f,
-        0.0f,0.5f,1.0f,0.0f,1.0f,0.0f,
-        0.5f,-0.5f,1.0f,0.0f,0.0f,1.0f
+        -0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,
+        -0.5f,0.5f,0.0f,1.0f,0.0f,0.0f,
+        0.5f,0.5f,0.0f,0.0f,1.0f,0.0f,
+        0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f
     };
 
     std::vector<int> testIndex {
-        0,1,2
+        0,1,2,
+        0,2,3
     };
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
@@ -55,37 +57,34 @@ static void RenderCB ()
     Vector3f scaleDown {0.5};
     MatrixTransform modelTransform {model};
     //modelTransform.rotate(rotateModel, -60.0f);
-    modelTransform.scale(scaleDown);
+    //modelTransform.scale(scaleDown);
+    Matrix4 newModel = modelTransform.getMatrix();
 
     //view matrix
     Matrix4 view {1.0f};
     Vector3f translateView{0.0f, 0.0f, -3.0f};
     MatrixTransform viewTransform {view};
     viewTransform.translate(translateView);
+    Matrix4 newView = viewTransform.getMatrix();
 
     //projection matrix
     Matrix4 proj {1.0f};
     MatrixTransform projTransform {proj};
-    //projTransform.createProjection(90, 600/600, 0.1, 1000);
-    projTransform.print();
+    projTransform.createProjection(90.0f, 800.0f/600.0f, 0.0f, 100.0f);
+    Matrix4 newProj = projTransform.getMatrix();
+    
+    Matrix4 mvp {1.0f};
+    mvp.multiply(newProj.matrix);
+    mvp.multiply(newView.matrix);
+    mvp.multiply(newModel.matrix);
 
-    int modelLocation {glGetUniformLocation(shaderProgram, "model")};
-    int viewLocation {glGetUniformLocation(shaderProgram, "view")};
-    int projLocation {glGetUniformLocation(shaderProgram, "projection")};
+    mvp.print();
 
-    float modelMatrix[16] {};
-    float viewMatrix[16] {};
-    float projMatrix[16] {};
-
-    modelTransform.fillArray(modelMatrix);
-    viewTransform.fillArray(viewMatrix);
-    projTransform.fillArray(projMatrix);
+    int modelLocation {glGetUniformLocation(shaderProgram, "mvp")};
 
     glUseProgram(shaderProgram);
 
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &modelMatrix[0]);
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &viewMatrix[0]);
-    glUniformMatrix4fv(projLocation, 1, GL_FALSE, &projMatrix[0]);
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mvp.matrix[0]);
 
     GLuint vertexVbo {0};
     GLuint ibo {0};
@@ -126,7 +125,7 @@ static void myInit ()
 int main (int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitWindowSize(600,600);
+    glutInitWindowSize(800,600);
     glutInitWindowPosition(200, 100);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
     glutCreateWindow("MoleculeSight");
