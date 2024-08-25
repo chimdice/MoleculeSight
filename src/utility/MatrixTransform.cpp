@@ -76,10 +76,10 @@ void MatrixTransform::createProjection(float fov, float aspectRatio, float near,
 
     projection.matrix[0] = scaleFactor*(1/aspectRatio);
     projection.matrix[5] = scaleFactor;
-    projection.matrix[10] = ((-far)/(zRange));
-    projection.matrix[11] = ((-near*far)/(zRange));
+    projection.matrix[10] = -((far+near)/(zRange));
+    projection.matrix[11] = -((2*near*far)/(zRange));
     projection.matrix[14] = 1;
-    projection.matrix[15] = 0;
+    projection.matrix[15] = 1;
 
     currentMatrix.multiply(projection.matrix);
 }

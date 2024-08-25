@@ -29,9 +29,9 @@ static void RenderCB ()
     //H2.renderMolecule();
 
     std::vector<float> testTriangle {
-        -0.5f,-0.5f,0.5f,1.0f,0.0f,0.0f,
-        0.0f,1.0f,0.0f,0.0f,1.0f,0.0f,
-        0.5f,0.5f,0.5f,0.0f,0.0f,1.0f
+        -0.5f,-0.5f,-1.0f,1.0f,0.0f,0.0f,
+        0.0f,0.5f,1.0f,0.0f,1.0f,0.0f,
+        0.5f,-0.5f,1.0f,0.0f,0.0f,1.0f
     };
 
     std::vector<int> testIndex {
@@ -51,10 +51,10 @@ static void RenderCB ()
 
     //model matrix
     Matrix4 model {1.0f};
-    Vector3f rotateModel{1.0f, 0.0f, 0.0f};
+    Vector3f rotateModel{0.0f, 1.0f, 0.0f};
     Vector3f scaleDown {0.5};
     MatrixTransform modelTransform {model};
-    //modelTransform.rotate(rotateModel, -55.0f);
+    //modelTransform.rotate(rotateModel, -60.0f);
     modelTransform.scale(scaleDown);
 
     //view matrix
@@ -66,7 +66,7 @@ static void RenderCB ()
     //projection matrix
     Matrix4 proj {1.0f};
     MatrixTransform projTransform {proj};
-    projTransform.createProjection(90, 600/600, 1, 100);
+    //projTransform.createProjection(90, 600/600, 0.1, 1000);
     projTransform.print();
 
     int modelLocation {glGetUniformLocation(shaderProgram, "model")};
@@ -120,13 +120,7 @@ static void RenderCB ()
 
 static void myInit ()
 {
-    //perspective
     glEnable(GL_DEPTH_TEST);
-   
-
-    //lighting
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
 }
 
 int main (int argc, char** argv)
