@@ -6,6 +6,7 @@
 #include "molecule-components/Molecule.h"
 #include "molecule-components/Molecule.cpp"
 #include "utility/Camera.cpp"
+#include "utility/utility.h"
 
 
 GLfloat T {0};
@@ -19,6 +20,8 @@ Molecule H2 (H2Atoms);
 
 // Camera
 Vector3f pos {0,0,3};
+Camera windowCamera (pos, 90.0f, 800.0f/600.0f, 0.0f, 100.0f);
+
 
 static void RenderCB ()
 {
@@ -57,11 +60,10 @@ static void RenderCB ()
     //modelTransform.rotate(rotateModel, -60.0f);
     Matrix4 newModel = modelTransform.getMatrix();
 
-    Camera windowCamera (pos, shaderProgram);
-
     glUseProgram(shaderProgram);
 
-    windowCamera.view(90.0f, 800.0f/600.0f, 0.0f, 100.0f);
+    windowCamera.addShader(shaderProgram);
+    windowCamera.view();
 
     int modelLocation {glGetUniformLocation(shaderProgram, "model")};
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel.matrix[0]);
@@ -102,6 +104,8 @@ static void myInit ()
     glEnable(GL_DEPTH_TEST);
 }
 
+void keyboardInput(unsigned char key, int x, int y);
+
 int main (int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -119,6 +123,18 @@ int main (int argc, char** argv)
     myInit();
 
     glutDisplayFunc(RenderCB);
+    glutKeyboardFunc(keyboardInput);
     glutMainLoop();
     return 0;
+}
+
+void keyboardInput(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    case 'w':
+        windowCamera.wPress();
+        break;
+    
+    }
 }

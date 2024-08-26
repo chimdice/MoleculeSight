@@ -68,4 +68,5 @@ unsigned int CreateShaders(const std::string& vertexShader, const std::string& f
 
     return shaderProgram;
 }
+
 #endif

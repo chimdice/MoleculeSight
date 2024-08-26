@@ -1,16 +1,24 @@
 #include "Camera.h"
 
-Camera::Camera(Vector3f position, unsigned int shaderProgram)
+Camera::Camera(Vector3f position, float fov, float aspectRatio, float near, float far)
 {
     this->position=position;
-    this->shaderProgram=shaderProgram;
+    this->fov=fov;
+    this->aspectRatio=aspectRatio;
+    this->near=near;
+    this->far=far;
 }
 
-void Camera::view(float fov, float aspectRatio, float near, float far)
+void Camera::addShader(unsigned int shaderProgramIn)
+{
+    shaderProgram = shaderProgramIn;
+}
+
+void Camera::view()
 {
     //view matrix
-    Vector3f cD {position.x , position.y , position.z};
-    //Vector3f cameraDirection {position.x + orientation.x, position.y + orientation.y, position.z + orientation.z};
+    //Vector3f cD {position.x , position.y , position.z};
+    Vector3f cD {position.x + orientation.x, position.y + orientation.y, position.z + orientation.z};
     Vector3f cameraDirection = NormalizeVector(cD);
 
     Vector3f cR {crossProduct(up, cameraDirection)};
@@ -35,8 +43,6 @@ void Camera::view(float fov, float aspectRatio, float near, float far)
     lookAtMatrix.matrix[9] = cameraDirection.y;
     lookAtMatrix.matrix[10] = cameraDirection.z;
 
-    lookAtMatrix.print();
-
     Matrix4 view {Multiply4x4(posMatrix.matrix,lookAtMatrix.matrix)};
 
     //projection matrix
@@ -50,4 +56,14 @@ void Camera::view(float fov, float aspectRatio, float near, float far)
 
     int camLocation {glGetUniformLocation(shaderProgram, "camera")};
     glUniformMatrix4fv(camLocation, 1, GL_FALSE, &camera.matrix[0]);
+}
+
+void Camera::wPress()
+{
+    position.x += speed * orientation.x;
+    position.y += speed * orientation.y;
+    position.z += speed * orientation.z;
+    view();
+
+    std::cout << position.z << '\n';
 }
