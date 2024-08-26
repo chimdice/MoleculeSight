@@ -18,8 +18,7 @@ std::vector<Atom> H2Atoms {h1};
 Molecule H2 (H2Atoms);
 
 // Camera
-Vector3f pos {0,1,7};
-Camera windowCamera (pos);
+Vector3f pos {0,0,3};
 
 static void RenderCB ()
 {
@@ -54,37 +53,18 @@ static void RenderCB ()
     //model matrix
     Matrix4 model {1.0f};
     Vector3f rotateModel{0.0f, 1.0f, 0.0f};
-    Vector3f scaleDown {0.5};
     MatrixTransform modelTransform {model};
     //modelTransform.rotate(rotateModel, -60.0f);
-    //modelTransform.scale(scaleDown);
     Matrix4 newModel = modelTransform.getMatrix();
 
-    //view matrix
-    Matrix4 view {1.0f};
-    Vector3f translateView{0.0f, 0.0f, -3.0f};
-    MatrixTransform viewTransform {view};
-    viewTransform.translate(translateView);
-    Matrix4 newView = viewTransform.getMatrix();
-
-    //projection matrix
-    Matrix4 proj {1.0f};
-    MatrixTransform projTransform {proj};
-    projTransform.createProjection(90.0f, 800.0f/600.0f, 0.0f, 100.0f);
-    Matrix4 newProj = projTransform.getMatrix();
-    
-    Matrix4 mvp {1.0f};
-    mvp.multiply(newProj.matrix);
-    mvp.multiply(newView.matrix);
-    mvp.multiply(newModel.matrix);
-
-    mvp.print();
-
-    int modelLocation {glGetUniformLocation(shaderProgram, "mvp")};
+    Camera windowCamera (pos, shaderProgram);
 
     glUseProgram(shaderProgram);
 
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &mvp.matrix[0]);
+    windowCamera.view(90.0f, 800.0f/600.0f, 0.0f, 100.0f);
+
+    int modelLocation {glGetUniformLocation(shaderProgram, "model")};
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel.matrix[0]);
 
     GLuint vertexVbo {0};
     GLuint ibo {0};

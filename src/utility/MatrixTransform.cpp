@@ -12,7 +12,8 @@ void MatrixTransform::translate(Vector3f vector)
    translate.matrix[7] = vector.y;
    translate.matrix[11] = vector.z;
 
-   currentMatrix.multiply(translate.matrix);
+   Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, translate.matrix)};
+   currentMatrix.updateMatrix(newMatrix.matrix);
 }
 
 void MatrixTransform::scale(Vector3f vector)
@@ -22,7 +23,8 @@ void MatrixTransform::scale(Vector3f vector)
    scale.matrix[5] = vector.y;
    scale.matrix[10] = vector.z;
 
-   currentMatrix.multiply(scale.matrix);
+   Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, scale.matrix)};
+   currentMatrix.updateMatrix(newMatrix.matrix);
 }
 
 void MatrixTransform::rotate(Vector3f vector, float angle)
@@ -52,7 +54,8 @@ void MatrixTransform::rotate(Vector3f vector, float angle)
     rotate.matrix[9] = minusCosAngle*rY*rZ + sinAngle*rX;
     rotate.matrix[10] = cosAngle + rZ*rZ*minusCosAngle;
 
-    currentMatrix.multiply(rotate.matrix);
+    Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, rotate.matrix)};
+    currentMatrix.updateMatrix(newMatrix.matrix);
 }
 
 void MatrixTransform::createProjection(float fov, float aspectRatio, float near, float far)
@@ -81,7 +84,8 @@ void MatrixTransform::createProjection(float fov, float aspectRatio, float near,
     projection.matrix[14] = -1;
     projection.matrix[15] = 0;
 
-    currentMatrix.multiply(projection.matrix);
+    Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, projection.matrix)};
+    currentMatrix.updateMatrix(newMatrix.matrix);
 }
 
 void MatrixTransform::print()
