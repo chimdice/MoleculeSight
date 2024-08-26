@@ -2,26 +2,14 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <vector>
-#include "molecule-components/Atom.h"
-#include "molecule-components/Molecule.h"
-#include "molecule-components/Molecule.cpp"
 #include "utility/Camera.cpp"
 #include "utility/utility.h"
 
 
-GLfloat T {0};
-
-//Hydrogen Atom
-Atom h1(1, 1, 1, .37, 1, 0, 0, 0);
-
-//H2 molecule
-std::vector<Atom> H2Atoms {h1};
-Molecule H2 (H2Atoms);
-
 // Camera
 Vector3f pos {0,0,3};
+float speed {1.0f};
 Camera windowCamera (pos, 90.0f, 800.0f/600.0f, 0.0f, 100.0f);
-
 
 static void RenderCB ()
 {
@@ -62,6 +50,7 @@ static void RenderCB ()
 
     glUseProgram(shaderProgram);
 
+    windowCamera.updatePosition(pos);
     windowCamera.addShader(shaderProgram);
     windowCamera.view();
 
@@ -105,6 +94,7 @@ static void myInit ()
 }
 
 void keyboardInput(unsigned char key, int x, int y);
+void specialKeyInput (int key, int x, int y);
 
 int main (int argc, char** argv)
 {
@@ -124,16 +114,63 @@ int main (int argc, char** argv)
 
     glutDisplayFunc(RenderCB);
     glutKeyboardFunc(keyboardInput);
+    glutSpecialFunc(specialKeyInput);
     glutMainLoop();
     return 0;
 }
 
 void keyboardInput(unsigned char key, int x, int y)
 {
+    Vector3f orien = windowCamera.getOrientation();
+    Vector3f move = windowCamera.shiftSide();
+    
     switch (key)
     {
     case 'w':
-        windowCamera.wPress();
+        pos.x += windowCamera.getSpeed() * orien.x;
+        pos.y += windowCamera.getSpeed() * orien.y;
+        pos.z += windowCamera.getSpeed() * orien.z;
+        glutPostRedisplay();
+        break;
+
+    case 's':
+        pos.x -= windowCamera.getSpeed() * orien.x;
+        pos.y -= windowCamera.getSpeed() * orien.y;
+        pos.z -= windowCamera.getSpeed() * orien.z;
+        glutPostRedisplay();
+        break;
+    
+    case 'd':
+        pos.x += windowCamera.getSpeed() * move.x;
+        pos.y += windowCamera.getSpeed() * move.y;
+        pos.z += windowCamera.getSpeed() * move.z;
+        glutPostRedisplay();
+        break;
+
+    case 'a':
+        pos.x -= windowCamera.getSpeed() * move.x;
+        pos.y -= windowCamera.getSpeed() * move.y;
+        pos.z -= windowCamera.getSpeed() * move.z;
+        glutPostRedisplay();
+        break;
+    }
+}
+
+void specialKeyInput (int key, int x, int y)
+{
+    Vector3f orien = windowCamera.getOrientation();
+    Vector3f move = windowCamera.shiftSide();
+
+    switch (key)
+    {
+    case 101:
+        pos.y += windowCamera.getSpeed();
+        glutPostRedisplay();
+        break;
+    
+    case 103:
+        pos.y -= windowCamera.getSpeed();
+        glutPostRedisplay();
         break;
     
     }

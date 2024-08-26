@@ -1,6 +1,9 @@
 #ifndef MATH_H
 #define MATH_H
 
+#include <iostream>
+#include <cmath>
+
 // class and structs
 
 struct Vector3f

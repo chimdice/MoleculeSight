@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "../Math3d.h"
+#include "./MatrixTransform.cpp"
 
 class Camera
 {
@@ -12,6 +13,9 @@ class Camera
         Vector3f position {};
         Vector3f orientation {0, 0 , -1};
         Vector3f up {0, 1, 0};
+        Vector3f cameraDirection {};
+        Vector3f cameraRight {};
+        Vector3f cameraUp {};
 
         int width {};
         int height {};
@@ -25,11 +29,21 @@ class Camera
         unsigned int shaderProgram {};
 
     public:
-        Camera (Vector3f position, float fov, float aspectRatio, float near, float far);
+        Camera (Vector3f inPosition, float fov, float aspectRatio, float near, float far);
+        void updatePosition (Vector3f inPosition);
         void addShader(unsigned int shaderProgram);
         void view ();
-        void wPress();
+        Vector3f shiftSide ();
 
+        float getSpeed ()
+        {
+            return speed;
+        }
+
+        Vector3f getOrientation ()
+        {
+            return orientation;
+        }
 
 };
 
