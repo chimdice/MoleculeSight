@@ -20,7 +20,7 @@ class Camera
         int width {};
         int height {};
         float speed {0.1};
-        float sensitivity {100};
+        float sensitivity {0.1};
 
         float fov {};
         float aspectRatio {};

@@ -8,8 +8,15 @@
 
 // Camera
 Vector3f pos {0,0,3};
-float speed {1.0f};
 Camera windowCamera (pos, 90.0f, 800.0f/600.0f, 0.0f, 100.0f);
+
+//speed
+float speed {0.1f};
+
+//free cam
+float sensitivity {0.1};
+float lastX {400};
+float lastY {300};
 
 static void RenderCB ()
 {
@@ -95,6 +102,7 @@ static void myInit ()
 
 void keyboardInput(unsigned char key, int x, int y);
 void specialKeyInput (int key, int x, int y);
+void mouseEvent (int button, int state, int x, int y);
 
 int main (int argc, char** argv)
 {
@@ -115,6 +123,7 @@ int main (int argc, char** argv)
     glutDisplayFunc(RenderCB);
     glutKeyboardFunc(keyboardInput);
     glutSpecialFunc(specialKeyInput);
+    glutMouseFunc(mouseEvent);
     glutMainLoop();
     return 0;
 }
@@ -127,30 +136,30 @@ void keyboardInput(unsigned char key, int x, int y)
     switch (key)
     {
     case 'w':
-        pos.x += windowCamera.getSpeed() * orien.x;
-        pos.y += windowCamera.getSpeed() * orien.y;
-        pos.z += windowCamera.getSpeed() * orien.z;
+        pos.x += speed * orien.x;
+        pos.y += speed * orien.y;
+        pos.z += speed * orien.z;
         glutPostRedisplay();
         break;
 
     case 's':
-        pos.x -= windowCamera.getSpeed() * orien.x;
-        pos.y -= windowCamera.getSpeed() * orien.y;
-        pos.z -= windowCamera.getSpeed() * orien.z;
+        pos.x -= speed * orien.x;
+        pos.y -= speed * orien.y;
+        pos.z -= speed * orien.z;
         glutPostRedisplay();
         break;
     
     case 'd':
-        pos.x += windowCamera.getSpeed() * move.x;
-        pos.y += windowCamera.getSpeed() * move.y;
-        pos.z += windowCamera.getSpeed() * move.z;
+        pos.x += speed * move.x;
+        pos.y += speed * move.y;
+        pos.z += speed * move.z;
         glutPostRedisplay();
         break;
 
     case 'a':
-        pos.x -= windowCamera.getSpeed() * move.x;
-        pos.y -= windowCamera.getSpeed() * move.y;
-        pos.z -= windowCamera.getSpeed() * move.z;
+        pos.x -= speed * move.x;
+        pos.y -= speed * move.y;
+        pos.z -= speed * move.z;
         glutPostRedisplay();
         break;
     }
@@ -164,14 +173,29 @@ void specialKeyInput (int key, int x, int y)
     switch (key)
     {
     case 101:
-        pos.y += windowCamera.getSpeed();
+        pos.y += speed;
         glutPostRedisplay();
         break;
     
     case 103:
-        pos.y -= windowCamera.getSpeed();
+        pos.y -= speed;
         glutPostRedisplay();
         break;
     
     }
+}
+
+void mouseEvent (int button, int state, int x, int y)
+{
+    float xDiff {x-lastX};
+    float yDiff {y-lastY};
+
+    lastX = x;
+    lastY = y;
+
+    xDiff *= sensitivity;
+    yDiff *= sensitivity;
+
+    std::cout << "x diff is" << xDiff << " and y diff is " << yDiff << ". \n";
+
 }
