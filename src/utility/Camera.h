@@ -29,7 +29,7 @@ class Camera
         unsigned int shaderProgram {};
 
     public:
-        Camera (Vector3f inPosition, float fov, float aspectRatio, float near, float far);
+        Camera (Vector3f inPosition, float fov, float near, float far, float width, float height);
         void updatePosition (Vector3f inPosition);
         void addShader(unsigned int shaderProgram);
         void view ();

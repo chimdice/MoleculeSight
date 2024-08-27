@@ -58,7 +58,7 @@ void MatrixTransform::rotate(Vector3f vector, float angle)
     currentMatrix.updateMatrix(newMatrix.matrix);
 }
 
-void MatrixTransform::createProjection(float fov, float aspectRatio, float near, float far)
+void MatrixTransform::createPerspective(float fov, float aspectRatio, float near, float far)
 {
     float fovRad {(fov/2) * (3.14159265359/180)};
     float tangent {std::tan(fovRad)};
@@ -92,6 +92,19 @@ void MatrixTransform::createProjection(float fov, float aspectRatio, float near,
     // projection.matrix[15] = 0;
 
     Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, projection.matrix)};
+    currentMatrix.updateMatrix(newMatrix.matrix);
+}
+
+void MatrixTransform::createOrtho(float height, float width, float near, float far)
+{
+    Matrix4 ortho {1.0f};
+
+    ortho.matrix[0] = 2 /(height);
+    ortho.matrix[5] = 2 / (width);
+    ortho.matrix[10] = -2 / (far - near);
+    ortho.matrix[14] = - (far + near)/ (far - near);
+
+    Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, ortho.matrix)};
     currentMatrix.updateMatrix(newMatrix.matrix);
 }
 

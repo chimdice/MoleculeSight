@@ -6,9 +6,11 @@
 #include "utility/utility.h"
 
 
+float width {800.0f};
+float height {600.0f};
 // Camera
 Vector3f pos {0,0,3};
-Camera windowCamera (pos, 90.0f, 800.0f/600.0f, 0.0f, 100.0f);
+Camera windowCamera (pos, 60.0f, 0.1f, 100.0f, width, height);
 
 //speed
 float speed {0.1f};
@@ -18,6 +20,18 @@ float sensitivity {0.1};
 float lastX {400};
 float lastY {300};
 
+float angle {0};
+
+void spin ()
+{
+    angle += 1;
+    if (angle > 360)
+    {
+        angle = 0;
+    }
+    glutPostRedisplay();
+}
+
 static void RenderCB ()
 {
 
@@ -26,15 +40,29 @@ static void RenderCB ()
     //H2.renderMolecule();
 
     std::vector<float> testTriangle {
-        -0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,
-        -0.5f,0.5f,0.0f,1.0f,0.0f,0.0f,
-        0.5f,0.5f,0.0f,0.0f,1.0f,0.0f,
-        0.5f,-0.5f,0.0f,0.0f,1.0f,0.0f
+        -0.5f,-0.5f,-0.5f,1.0f,0.0f,0.0f,
+        -0.5f,0.5f,-0.5f,1.0f,0.0f,0.0f,
+        0.5f,0.5f,-0.5f,0.0f,1.0f,0.0f,
+        0.5f,-0.5f,-0.5f,0.0f,1.0f,0.0f,
+
+        -0.5f,-0.5f,0.5f,1.0f,0.0f,1.0f,
+        -0.5f,0.5f,0.5f,1.0f,0.0f,1.0f,
+        0.5f,0.5f,0.5f,0.0f,1.0f,1.0f,
+        0.5f,-0.5f,0.5f,0.0f,1.0f,1.0f
     };
 
     std::vector<int> testIndex {
+        //front
         0,1,2,
-        0,2,3
+        0,2,3,
+        //back
+        4,5,6,
+        4,6,7,
+        //sides
+        3,2,6,
+        3,6,7,
+        0,1,5,
+        0,5,4,
     };
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
@@ -50,9 +78,9 @@ static void RenderCB ()
 
     //model matrix
     Matrix4 model {1.0f};
-    Vector3f rotateModel{0.0f, 0.0f, 1.0f};
+    Vector3f rotateModel{0.0f, 1.0f, 0.0f};
     MatrixTransform modelTransform {model};
-    modelTransform.rotate(rotateModel, -60.0f);
+    modelTransform.rotate(rotateModel, -angle);
     Matrix4 newModel = modelTransform.getMatrix();
 
     glUseProgram(shaderProgram);
@@ -98,6 +126,7 @@ static void RenderCB ()
 static void myInit ()
 {
     glEnable(GL_DEPTH_TEST);
+    glCullFace(GL_BACK);
 }
 
 void keyboardInput(unsigned char key, int x, int y);
@@ -124,6 +153,7 @@ int main (int argc, char** argv)
     glutKeyboardFunc(keyboardInput);
     glutSpecialFunc(specialKeyInput);
     glutMouseFunc(mouseEvent);
+    glutIdleFunc(spin);
     glutMainLoop();
     return 0;
 }
@@ -136,16 +166,12 @@ void keyboardInput(unsigned char key, int x, int y)
     switch (key)
     {
     case 'w':
-        pos.x += speed * orien.x;
-        pos.y += speed * orien.y;
-        pos.z += speed * orien.z;
+        pos.y += speed;
         glutPostRedisplay();
         break;
 
     case 's':
-        pos.x -= speed * orien.x;
-        pos.y -= speed * orien.y;
-        pos.z -= speed * orien.z;
+        pos.y -= speed;
         glutPostRedisplay();
         break;
     

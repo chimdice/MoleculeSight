@@ -1,11 +1,13 @@
 #include "Camera.h"
 
-Camera::Camera(Vector3f inPosition, float fov, float aspectRatio, float near, float far)
+Camera::Camera(Vector3f inPosition, float fov, float near, float far, float width, float height)
 {
     this->fov=fov;
-    this->aspectRatio=aspectRatio;
+    this->aspectRatio=width/height;
     this->near=near;
     this->far=far;
+    this->width=width;
+    this->height=height;
 
     this->position=inPosition;
     Vector3f cD {position.x + orientation.x, position.y + orientation.y, position.z + orientation.z};
@@ -50,14 +52,18 @@ void Camera::view()
     lookAtMatrix.matrix[6] = cameraDirection.y;
     lookAtMatrix.matrix[10] = cameraDirection.z;
     Matrix4 view {Multiply4x4(lookAtMatrix.matrix,posMatrix.matrix)};
+    view.print();
 
     //projection matrix
     Matrix4 proj {1.0f};
     MatrixTransform projTransform {proj};
-    projTransform.createProjection(90.0f, 800.0f/600.0f, 1.0f, 100.0f);
+    //projTransform.createPerspective(90.0f, 800.0f/600.0f, 1.0f, 100.0f);
+    projTransform.createOrtho(2/.75, 2, near, far);
     Matrix4 newProj = projTransform.getMatrix();
+    newProj.print();
 
     Matrix4 camera {Multiply4x4(newProj.matrix, view.matrix)};
+    camera.print();
 
     int projLocation {glGetUniformLocation(shaderProgram, "camera")};
     glUniformMatrix4fv(projLocation, 1, GL_FALSE, &camera.matrix[0]);
