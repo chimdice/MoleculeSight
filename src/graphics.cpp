@@ -43,9 +43,9 @@ static void RenderCB ()
 
     //model matrix
     Matrix4 model {1.0f};
-    Vector3f rotateModel{0.0f, 1.0f, 0.0f};
+    Vector3f rotateModel{0.0f, 0.0f, 1.0f};
     MatrixTransform modelTransform {model};
-    //modelTransform.rotate(rotateModel, -60.0f);
+    modelTransform.rotate(rotateModel, -60.0f);
     Matrix4 newModel = modelTransform.getMatrix();
 
     glUseProgram(shaderProgram);

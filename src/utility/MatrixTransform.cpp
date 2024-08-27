@@ -8,9 +8,9 @@ MatrixTransform::MatrixTransform(Matrix4 matrix)
 void MatrixTransform::translate(Vector3f vector)
 {
    Matrix4 translate {1};
-   translate.matrix[3] = vector.x;
-   translate.matrix[7] = vector.y;
-   translate.matrix[11] = vector.z;
+   translate.matrix[12] = vector.x;
+   translate.matrix[13] = vector.y;
+   translate.matrix[14] = vector.z;
 
    Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, translate.matrix)};
    currentMatrix.updateMatrix(newMatrix.matrix);
@@ -43,15 +43,15 @@ void MatrixTransform::rotate(Vector3f vector, float angle)
 
     Matrix4 rotate {1};
     rotate.matrix[0] = cosAngle + rX*rX*minusCosAngle;
-    rotate.matrix[1] = minusCosAngle*rY*rX - sinAngle*rZ;
-    rotate.matrix[2] = minusCosAngle*rZ*rX + sinAngle*rY;
+    rotate.matrix[4] = minusCosAngle*rY*rX - sinAngle*rZ;
+    rotate.matrix[8] = minusCosAngle*rZ*rX + sinAngle*rY;
 
-    rotate.matrix[4] = minusCosAngle*rY*rX + sinAngle*rZ;
+    rotate.matrix[1] = minusCosAngle*rY*rX + sinAngle*rZ;
     rotate.matrix[5] = cosAngle + rY*rY*minusCosAngle;
-    rotate.matrix[6] = minusCosAngle*rY*rZ - sinAngle*rX;
+    rotate.matrix[9] = minusCosAngle*rY*rZ - sinAngle*rX;
 
-    rotate.matrix[8] = minusCosAngle*rZ*rX - sinAngle*rY;
-    rotate.matrix[9] = minusCosAngle*rY*rZ + sinAngle*rX;
+    rotate.matrix[2] = minusCosAngle*rZ*rX - sinAngle*rY;
+    rotate.matrix[6] = minusCosAngle*rY*rZ + sinAngle*rX;
     rotate.matrix[10] = cosAngle + rZ*rZ*minusCosAngle;
 
     Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, rotate.matrix)};
@@ -80,9 +80,16 @@ void MatrixTransform::createProjection(float fov, float aspectRatio, float near,
     projection.matrix[0] = scaleFactor*(1/aspectRatio);
     projection.matrix[5] = scaleFactor;
     projection.matrix[10] = far / zRange;
-    projection.matrix[11] = -((near*far)/(zRange));
-    projection.matrix[14] = -1;
+    projection.matrix[14] = ((near*far)/(zRange));
+    projection.matrix[11] = -1;
     projection.matrix[15] = 0;
+
+    // projection.matrix[0] = scaleFactor*(1/aspectRatio);
+    // projection.matrix[5] = scaleFactor;
+    // projection.matrix[10] = -far / zRange;
+    // projection.matrix[14] = -((near*far)/(zRange));
+    // projection.matrix[11] = -1;
+    // projection.matrix[15] = 0;
 
     Matrix4 newMatrix {Multiply4x4(currentMatrix.matrix, projection.matrix)};
     currentMatrix.updateMatrix(newMatrix.matrix);

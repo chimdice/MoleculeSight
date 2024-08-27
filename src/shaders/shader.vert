@@ -9,6 +9,6 @@ out vec4 vertexColor;
 
 void main()
 {
-    gl_Position = model*camera*vec4(aPos, 1.0);
+    gl_Position = camera*model*vec4(aPos, 1.0);
     vertexColor = vec4(aColor, 1.0);
 }

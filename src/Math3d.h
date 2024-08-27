@@ -64,10 +64,10 @@ struct Matrix4
     void print()
     {
         std::cout << '\n';
-        std::cout << " " << matrix[0]<< " " << matrix[1]<< " "<< matrix[2]<< " "<< matrix[3]<< "\n";
-        std::cout << " " << matrix[4]<< " " << matrix[5]<< " "<< matrix[6]<< " "<< matrix[7]<< "\n";
-        std::cout << " " << matrix[8]<< " " << matrix[9]<< " "<< matrix[10]<< " "<< matrix[11]<< "\n";
-        std::cout << " " << matrix[12]<< " " << matrix[13]<< " "<< matrix[14]<< " "<< matrix[15]<< "\n";
+        std::cout << " " << matrix[0]<< " " << matrix[4]<< " "<< matrix[8]<< " "<< matrix[12]<< "\n";
+        std::cout << " " << matrix[1]<< " " << matrix[5]<< " "<< matrix[9]<< " "<< matrix[13]<< "\n";
+        std::cout << " " << matrix[2]<< " " << matrix[6]<< " "<< matrix[10]<< " "<< matrix[14]<< "\n";
+        std::cout << " " << matrix[3]<< " " << matrix[7]<< " "<< matrix[11]<< " "<< matrix[15]<< "\n";
         std::cout << '\n';
     }
 
@@ -135,28 +135,28 @@ Matrix4 Multiply4x4(float matrix[16], float matrix2[16])
 {
     Matrix4 tempMatrix {};
     //row 1
-    tempMatrix.matrix[0] = matrix[0]*matrix2[0] + matrix[1]*matrix2[4] + matrix[2]*matrix2[8]+ matrix[3]*matrix2[12];
-    tempMatrix.matrix[1] = matrix[0]*matrix2[1] + matrix[1]*matrix2[5] + matrix[2]*matrix2[9]+ matrix[3]*matrix2[13];
-    tempMatrix.matrix[2] = matrix[0]*matrix2[2] + matrix[1]*matrix2[6] + matrix[2]*matrix2[10]+ matrix[3]*matrix2[14];
-    tempMatrix.matrix[3] = matrix[0]*matrix2[3] + matrix[1]*matrix2[7] + matrix[2]*matrix2[11]+ matrix[3]*matrix2[15];
+    tempMatrix.matrix[0] = matrix2[0]*matrix[0] + matrix2[1]*matrix[4] + matrix2[2]*matrix[8]+ matrix2[3]*matrix[12];
+    tempMatrix.matrix[1] = matrix2[0]*matrix[1] + matrix2[1]*matrix[5] + matrix2[2]*matrix[9]+ matrix2[3]*matrix[13];
+    tempMatrix.matrix[2] = matrix2[0]*matrix[2] + matrix2[1]*matrix[6] + matrix2[2]*matrix[10]+ matrix2[3]*matrix[14];
+    tempMatrix.matrix[3] = matrix2[0]*matrix[3] + matrix2[1]*matrix[7] + matrix2[2]*matrix[11]+ matrix2[3]*matrix[15];
 
     //row 2
-    tempMatrix.matrix[4] = matrix[4]*matrix2[0] + matrix[5]*matrix2[4] + matrix[6]*matrix2[8]+ matrix[7]*matrix2[12];
-    tempMatrix.matrix[5] = matrix[4]*matrix2[1] + matrix[5]*matrix2[5] + matrix[6]*matrix2[9]+ matrix[7]*matrix2[13];
-    tempMatrix.matrix[6] = matrix[4]*matrix2[2] + matrix[5]*matrix2[6] + matrix[6]*matrix2[10]+ matrix[7]*matrix2[14];
-    tempMatrix.matrix[7] = matrix[4]*matrix2[3] + matrix[5]*matrix2[7] + matrix[6]*matrix2[11]+ matrix[7]*matrix2[15];
+    tempMatrix.matrix[4] = matrix2[4]*matrix[0] + matrix2[5]*matrix[4] + matrix2[6]*matrix[8]+ matrix2[7]*matrix[12];
+    tempMatrix.matrix[5] = matrix2[4]*matrix[1] + matrix2[5]*matrix[5] + matrix2[6]*matrix[9]+ matrix2[7]*matrix[13];
+    tempMatrix.matrix[6] = matrix2[4]*matrix[2] + matrix2[5]*matrix[6] + matrix2[6]*matrix[10]+ matrix2[7]*matrix[14];
+    tempMatrix.matrix[7] = matrix2[4]*matrix[3] + matrix2[5]*matrix[7] + matrix2[6]*matrix[11]+ matrix2[7]*matrix[15];
 
     //row 3
-    tempMatrix.matrix[8] = matrix[8]*matrix2[0] + matrix[9]*matrix2[4] + matrix[10]*matrix2[8]+ matrix[11]*matrix2[12];
-    tempMatrix.matrix[9] = matrix[8]*matrix2[1] + matrix[9]*matrix2[5] + matrix[10]*matrix2[9]+ matrix[11]*matrix2[13];
-    tempMatrix.matrix[10] = matrix[8]*matrix2[2] + matrix[9]*matrix2[6] + matrix[10]*matrix2[10]+ matrix[11]*matrix2[14];
-    tempMatrix.matrix[11] = matrix[8]*matrix2[3] + matrix[9]*matrix2[7] + matrix[10]*matrix2[11]+ matrix[11]*matrix2[15];
+    tempMatrix.matrix[8] = matrix2[8]*matrix[0] + matrix2[9]*matrix[4] + matrix2[10]*matrix[8]+ matrix2[11]*matrix[12];
+    tempMatrix.matrix[9] = matrix2[8]*matrix[1] + matrix2[9]*matrix[5] + matrix2[10]*matrix[9]+ matrix2[11]*matrix[13];
+    tempMatrix.matrix[10] = matrix2[8]*matrix[2] + matrix2[9]*matrix[6] + matrix2[10]*matrix[10]+ matrix2[11]*matrix[14];
+    tempMatrix.matrix[11] = matrix2[8]*matrix[3] + matrix2[9]*matrix[7] + matrix2[10]*matrix[11]+ matrix2[11]*matrix[15];
 
     //row 4
-    tempMatrix.matrix[12] = matrix[12]*matrix2[0] + matrix[13]*matrix2[4] + matrix[14]*matrix2[8]+ matrix[15]*matrix2[12];
-    tempMatrix.matrix[13] = matrix[12]*matrix2[1] + matrix[13]*matrix2[5] + matrix[14]*matrix2[9]+ matrix[15]*matrix2[13];
-    tempMatrix.matrix[14] = matrix[12]*matrix2[2] + matrix[13]*matrix2[6] + matrix[14]*matrix2[10]+ matrix[15]*matrix2[14];
-    tempMatrix.matrix[15] = matrix[12]*matrix2[3] + matrix[13]*matrix2[7] + matrix[14]*matrix2[11]+ matrix[15]*matrix2[15];
+    tempMatrix.matrix[12] = matrix2[12]*matrix[0] + matrix2[13]*matrix[4] + matrix2[14]*matrix[8]+ matrix2[15]*matrix[12];
+    tempMatrix.matrix[13] = matrix2[12]*matrix[1] + matrix2[13]*matrix[5] + matrix2[14]*matrix[9]+ matrix2[15]*matrix[13];
+    tempMatrix.matrix[14] = matrix2[12]*matrix[2] + matrix2[13]*matrix[6] + matrix2[14]*matrix[10]+ matrix2[15]*matrix[14];
+    tempMatrix.matrix[15] = matrix2[12]*matrix[3] + matrix2[13]*matrix[7] + matrix2[14]*matrix[11]+ matrix2[15]*matrix[15];
 
     return tempMatrix;
 
