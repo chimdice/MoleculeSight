@@ -95,7 +95,6 @@ Vector3f Camera::shiftSide ()
 
 void Camera::rotate (float yawIn, float pitchIn)
 {
-    Vector3f pivot {0, 0, 0};
 
     // x rotation
     Matrix4 rotatex {1.0f};

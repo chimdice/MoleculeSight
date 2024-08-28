@@ -10,6 +10,7 @@ float width {800.0f};
 float height {600.0f};
 // Camera
 Vector3f pos {0,0,3};
+Vector3f piv {0,0,0};
 Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, width, height);
 
 //speed
@@ -173,22 +174,32 @@ void keyboardInput(unsigned char key, int x, int y)
     {
     case 's':
         pos.y += speed;
+        piv.y += speed;
         break;
 
     case 'w':
         pos.y -= speed;
+        piv.y -= speed;
         break;
     
     case 'a':
         pos.x += speed * move.x;
         pos.y += speed * move.y;
         pos.z += speed * move.z;
+
+        piv.x += speed * move.x;
+        piv.y += speed * move.y;
+        piv.z += speed * move.z;
         break;
 
     case 'd':
         pos.x -= speed * move.x;
         pos.y -= speed * move.y;
         pos.z -= speed * move.z;
+
+        piv.x -= speed * move.x;
+        piv.y -= speed * move.y;
+        piv.z -= speed * move.z;
         break;
     }
 
@@ -198,22 +209,7 @@ void keyboardInput(unsigned char key, int x, int y)
 
 void specialKeyInput (int key, int x, int y)
 {
-    Vector3f orien = windowCamera.getOrientation();
-    Vector3f move = windowCamera.shiftSide();
-
-    switch (key)
-    {
-    case 101:
-        pos.y += speed;
-        glutPostRedisplay();
-        break;
     
-    case 103:
-        pos.y -= speed;
-        glutPostRedisplay();
-        break;
-    
-    }
 }
 
 void mouseEvent (int x, int y)

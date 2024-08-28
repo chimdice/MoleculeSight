@@ -14,6 +14,7 @@ class Camera
         Vector3f orientation {0, 0 , -1};
         Vector3f up {0, 1, 0};
         Vector3f look {0,0,0};
+        Vector3f pivot {0, 0, 0};
         Vector3f cameraDirection {};
         Vector3f cameraRight {};
         Vector3f cameraUp {};
@@ -61,6 +62,13 @@ class Camera
                 orienfov -= sensitivity;
             }
             
+        }
+
+        void updatePivot(Vector3f piv)
+        {
+            pivot.x = piv.x;
+            pivot.y = piv.y;
+            pivot.z = piv.z;
         }
 
 };
