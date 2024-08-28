@@ -19,8 +19,11 @@ float speed {0.1f};
 float sensitivity {0.1};
 float lastX {400};
 float lastY {300};
+int clickDown {};
 
 float angle {0};
+float yaw {-90.0f};
+float pitch {0.0f};
 
 void spin ()
 {
@@ -85,7 +88,7 @@ static void RenderCB ()
 
     glUseProgram(shaderProgram);
 
-    windowCamera.updatePosition(pos);
+    //windowCamera.updatePosition(pos);
     windowCamera.addShader(shaderProgram);
     windowCamera.view();
 
@@ -131,7 +134,9 @@ static void myInit ()
 
 void keyboardInput(unsigned char key, int x, int y);
 void specialKeyInput (int key, int x, int y);
-void mouseEvent (int button, int state, int x, int y);
+void mouseEvent (int x, int y);
+void mouseCB (int button, int state, int x, int y);
+
 
 int main (int argc, char** argv)
 {
@@ -152,8 +157,9 @@ int main (int argc, char** argv)
     glutDisplayFunc(RenderCB);
     glutKeyboardFunc(keyboardInput);
     glutSpecialFunc(specialKeyInput);
-    glutMouseFunc(mouseEvent);
-    glutIdleFunc(spin);
+    glutMouseFunc(mouseCB);
+    glutMotionFunc(mouseEvent);
+    //glutIdleFunc(spin);
     glutMainLoop();
     return 0;
 }
@@ -167,28 +173,27 @@ void keyboardInput(unsigned char key, int x, int y)
     {
     case 'w':
         pos.y += speed;
-        glutPostRedisplay();
         break;
 
     case 's':
         pos.y -= speed;
-        glutPostRedisplay();
         break;
     
     case 'd':
         pos.x += speed * move.x;
         pos.y += speed * move.y;
         pos.z += speed * move.z;
-        glutPostRedisplay();
         break;
 
     case 'a':
         pos.x -= speed * move.x;
         pos.y -= speed * move.y;
         pos.z -= speed * move.z;
-        glutPostRedisplay();
         break;
     }
+
+    windowCamera.updatePosition(pos);
+    glutPostRedisplay();
 }
 
 void specialKeyInput (int key, int x, int y)
@@ -211,17 +216,47 @@ void specialKeyInput (int key, int x, int y)
     }
 }
 
-void mouseEvent (int button, int state, int x, int y)
+void mouseEvent (int x, int y)
 {
-    float xDiff {x-lastX};
-    float yDiff {y-lastY};
+    if (clickDown == GLUT_DOWN) {
+        float xDiff {x-lastX};
+        float yDiff {y-lastY};
 
+        lastX = x;
+        lastY = y;
+
+        xDiff *= sensitivity;
+        yDiff *= sensitivity;
+
+        yaw -= xDiff;
+        pitch += yDiff;
+    }
+
+    if (yaw > 0) {
+        yaw = 0;
+    } else if (yaw < -180) {
+        yaw = -180;
+    }
+
+    if (pitch > 89) {
+        pitch = 89;
+    } else if (pitch < -89) {
+        pitch = -89;
+    }
+
+    windowCamera.rotate(yaw, pitch);
+    glutPostRedisplay();
+}
+
+void mouseCB (int button, int state, int x, int y)
+{
     lastX = x;
     lastY = y;
+    clickDown = state;
 
-    xDiff *= sensitivity;
-    yDiff *= sensitivity;
+    if (button == 3 || button == 4) {
+        windowCamera.updateOfov(button);
+    }
 
-    std::cout << "x diff is" << xDiff << " and y diff is " << yDiff << ". \n";
-
+    glutPostRedisplay();
 }
