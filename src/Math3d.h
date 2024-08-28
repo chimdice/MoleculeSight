@@ -161,4 +161,15 @@ Matrix4 Multiply4x4(float matrix[16], float matrix2[16])
     return tempMatrix;
 
 }
+
+Vector3f Multiply4x1(float matrix[16], Vector3f vector)
+{
+    Vector3f tempVector {};
+
+    tempVector.x = matrix[0]*vector.x + matrix[4]*vector.y + matrix[8]*vector.z;
+    tempVector.y = matrix[1]*vector.x + matrix[5]*vector.y + matrix[9]*vector.z;
+    tempVector.z = matrix[2]*vector.x + matrix[6]*vector.y + matrix[10]*vector.z;
+
+    return tempVector;
+}
 #endif

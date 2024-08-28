@@ -10,19 +10,19 @@ float width {800.0f};
 float height {600.0f};
 // Camera
 Vector3f pos {0,0,3};
-Camera windowCamera (pos, 60.0f, 0.1f, 100.0f, width, height);
+Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, width, height);
 
 //speed
 float speed {0.1f};
 
 //free cam
-float sensitivity {0.1};
+float sensitivity {0.1f};
 float lastX {400};
 float lastY {300};
 int clickDown {};
 
 float angle {0};
-float yaw {-90.0f};
+float yaw {90.0f};
 float pitch {0.0f};
 
 void spin ()
@@ -171,21 +171,21 @@ void keyboardInput(unsigned char key, int x, int y)
     
     switch (key)
     {
-    case 'w':
+    case 's':
         pos.y += speed;
         break;
 
-    case 's':
+    case 'w':
         pos.y -= speed;
         break;
     
-    case 'd':
+    case 'a':
         pos.x += speed * move.x;
         pos.y += speed * move.y;
         pos.z += speed * move.z;
         break;
 
-    case 'a':
+    case 'd':
         pos.x -= speed * move.x;
         pos.y -= speed * move.y;
         pos.z -= speed * move.z;
@@ -228,24 +228,26 @@ void mouseEvent (int x, int y)
         xDiff *= sensitivity;
         yDiff *= sensitivity;
 
-        yaw -= xDiff;
-        pitch += yDiff;
+
+        windowCamera.rotate(-xDiff, -yDiff);
+        glutPostRedisplay();
     }
 
-    if (yaw > 0) {
-        yaw = 0;
-    } else if (yaw < -180) {
-        yaw = -180;
-    }
+    // if (yaw > 0) {
+    //     yaw -= 360;
+    // } else if (yaw < -360) {
+    //     yaw += 360;
+    // }
 
-    if (pitch > 89) {
-        pitch = 89;
-    } else if (pitch < -89) {
-        pitch = -89;
-    }
+    // if (pitch > 89) {
+    //     pitch = 89;
+    // } else if (pitch < -89) {
+    //     pitch = -89;
+    // }
 
-    windowCamera.rotate(yaw, pitch);
-    glutPostRedisplay();
+    // std::cout << " yaw value is " << yaw << ". \n";
+    // windowCamera.rotate(yaw, pitch);
+    // glutPostRedisplay();
 }
 
 void mouseCB (int button, int state, int x, int y)
