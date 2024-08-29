@@ -4,6 +4,7 @@
 #include <vector>
 #include "utility/Camera.cpp"
 #include "utility/utility.h"
+#include "molecule-components/Molecule.cpp"
 
 
 float width {800.0f};
@@ -26,6 +27,12 @@ float angle {0};
 float yaw {90.0f};
 float pitch {0.0f};
 
+//Molecule
+Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
+std::vector<Atom> hs {h1};
+Molecule molH (hs);
+std::vector<Molecule> allMol {molH};
+
 void spin ()
 {
     angle += 1;
@@ -39,9 +46,30 @@ void spin ()
 static void RenderCB ()
 {
 
+    float byteTrack {0};
+    float byteTrack2 {0};
+    std::vector<std::vector<float>> molVertexData {};
+    std::vector<std::vector<int>> molVertexIndex {};
+    std::vector<float> molVertexSize {};
+    std::vector<float> molIndexSize {};
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //H2.renderMolecule();
+    for (Molecule& mol: allMol) {
+        mol.createMolecule();
+        molVertexData = mol.fillAtomsVertexData();
+        molVertexIndex = mol.fillAtomsIndexData();
+        mol.fillAtomsVertexSize(molVertexSize);
+        mol.fillAtomsIndexSize(molIndexSize);
+    }
+
+    std::cout << molVertexData.size() << '\n';
+
+    float vertexSize = btyeSize2DVector(molVertexData);
+    float indexSize = btyeSize2DVector(molVertexIndex);
+
+    std::vector<float> b1 {fillVector(molVertexData)};
+    std::vector<int> b2 {fillVector(molVertexIndex)};
 
     std::vector<float> testTriangle {
         -0.5f,-0.5f,-0.5f,1.0f,0.0f,0.0f,
@@ -82,9 +110,10 @@ static void RenderCB ()
 
     //model matrix
     Matrix4 model {1.0f};
-    Vector3f rotateModel{0.0f, 1.0f, 0.0f};
+    Vector3f rotateModel{0.1f};
     MatrixTransform modelTransform {model};
-    modelTransform.rotate(rotateModel, -angle);
+    //modelTransform.rotate(rotateModel, -angle);
+    modelTransform.scale(rotateModel);
     Matrix4 newModel = modelTransform.getMatrix();
 
     glUseProgram(shaderProgram);
@@ -103,13 +132,24 @@ static void RenderCB ()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    std::cout << b1.size() << " " << b2.size() << " \n";
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glBufferData(GL_ARRAY_BUFFER, testTriangle.size()*sizeof(float), testTriangle.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, b1.size()*sizeof(float), b1.data(), GL_STATIC_DRAW);
+    // for (int i = 0; i < molVertexData.size(); i++) {
+    //     glBufferSubData(GL_ARRAY_BUFFER, byteTrack, byteTrack+ molVertexSize[i], molVertexData[i].data());
+    //     byteTrack += molVertexSize[i];
+    // }
+    //glBufferSubData(GL_ARRAY_BUFFER, byteTrack, byteTrack+ molVertexSize[0], molVertexData[0].data());
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, testIndex.size()*sizeof(int), testIndex.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, b2.size()*sizeof(float), b2.data(), GL_STATIC_DRAW);
+    // for (int i = 0; i < molVertexIndex.size(); i++) {
+    //     glBufferSubData(GL_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[i], molVertexIndex[i].data());
+    //     byteTrack2 += molIndexSize[i];
+    // }
+    //glBufferSubData(GL_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[0], molVertexIndex[0].data());
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -120,7 +160,7 @@ static void RenderCB ()
 
 
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, testIndex.size(), GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
@@ -167,43 +207,41 @@ int main (int argc, char** argv)
 
 void keyboardInput(unsigned char key, int x, int y)
 {
-    Vector3f orien = windowCamera.getOrientation();
-    Vector3f move = windowCamera.shiftSide();
     
-    switch (key)
-    {
-    case 's':
-        pos.y += speed;
-        piv.y += speed;
-        break;
+    // switch (key)
+    // {
+    // case 's':
+    //     pos.y += speed;
+    //     piv.y += speed;
+    //     break;
 
-    case 'w':
-        pos.y -= speed;
-        piv.y -= speed;
-        break;
+    // case 'w':
+    //     pos.y -= speed;
+    //     piv.y -= speed;
+    //     break;
     
-    case 'a':
-        pos.x += speed * move.x;
-        pos.y += speed * move.y;
-        pos.z += speed * move.z;
+    // case 'a':
+    //     pos.x += speed * move.x;
+    //     pos.y += speed * move.y;
+    //     pos.z += speed * move.z;
 
-        piv.x += speed * move.x;
-        piv.y += speed * move.y;
-        piv.z += speed * move.z;
-        break;
+    //     piv.x += speed * move.x;
+    //     piv.y += speed * move.y;
+    //     piv.z += speed * move.z;
+    //     break;
 
-    case 'd':
-        pos.x -= speed * move.x;
-        pos.y -= speed * move.y;
-        pos.z -= speed * move.z;
+    // case 'd':
+    //     pos.x -= speed * move.x;
+    //     pos.y -= speed * move.y;
+    //     pos.z -= speed * move.z;
 
-        piv.x -= speed * move.x;
-        piv.y -= speed * move.y;
-        piv.z -= speed * move.z;
-        break;
-    }
+    //     piv.x -= speed * move.x;
+    //     piv.y -= speed * move.y;
+    //     piv.z -= speed * move.z;
+    //     break;
+    // }
 
-    windowCamera.updatePosition(pos);
+    windowCamera.updatePosition(key);
     glutPostRedisplay();
 }
 

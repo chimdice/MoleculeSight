@@ -13,7 +13,6 @@ class Sphere
         std::vector<Vector4f> vertices {};
         std::vector<Vector4f> normalizedVertices {};
         std::vector<float> vertexVector {};
-        std::vector<float> sphereTrianglesColor {};
         std::vector<int> vertexIndex {};
 
         float radius {};
@@ -21,6 +20,8 @@ class Sphere
         float numStacks {};
         float pi {3.141529};
         int numTriangles {0};
+        float bufferSizeVertex {};
+        float bufferSizeIndex {};
     
         void buildVertices();
         void generateTriangles();
@@ -34,11 +35,6 @@ class Sphere
             return vertexVector;
         }
 
-        std::vector<float> getColor ()
-        {
-            return sphereTrianglesColor;
-        }
-
         std::vector<int> getVertexIndex ()
         {
             return vertexIndex;
@@ -48,6 +44,17 @@ class Sphere
         {
             return numTriangles;
         }
+        
+        float getVertexBufferSize ()
+        {
+            return bufferSizeVertex;
+        }
+
+        float getIndexBufferSize ()
+        {
+            return bufferSizeIndex;
+        }
+
 
 
 

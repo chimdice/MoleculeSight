@@ -69,4 +69,50 @@ unsigned int CreateShaders(const std::string& vertexShader, const std::string& f
     return shaderProgram;
 }
 
+float btyeSize2DVector (std::vector<std::vector<float>> vectors)
+{
+    float size {0};
+    float floatSize {sizeof(float)};
+
+    for (std::vector<float>& v: vectors) {
+        size += (v.size()*floatSize);
+    }
+
+    return size;
+}
+
+float btyeSize2DVector (std::vector<std::vector<int>> vectors)
+{
+    float size {0};
+    float intSize {sizeof(int)};
+
+    for (std::vector<int>& v: vectors) {
+        size += (v.size()*intSize);
+    }
+
+    return size;
+}
+
+std::vector<float> fillVector (std::vector<std::vector<float>> vectors)
+{
+    std::vector<float> vIn {};
+    for (std::vector<float>& v: vectors) {
+        for (float& value: v) {
+            vIn.push_back(value);
+        }
+    }
+    return vIn;
+}
+
+std::vector<int> fillVector (std::vector<std::vector<int>> vectors)
+{
+    std::vector<int> vIn {};
+    for (std::vector<int>& v: vectors) {
+        for (int& value: v) {
+            vIn.push_back(value);
+        }
+    }
+    return vIn;
+}
+
 #endif

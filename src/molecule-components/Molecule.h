@@ -23,9 +23,10 @@ class Molecule
 
         int mass {};
 
-        std::vector<float> sphereVertex {};
-        std::vector<int> sphereVertexIndex {};
-        std::vector<float> sphereColor {};
+        std::vector<std::vector<float>> atomsVertexData {};
+        std::vector<std::vector<int>> atomsVertexIndex {};
+        std::vector<float> atomsVertexSize {};
+        std::vector<float> atomsIndexSize {};
 
     
     public:
@@ -35,7 +36,7 @@ class Molecule
         void bondLength(int pos1, int pos2);
         void bondAngle(int pos1, int pos2, int pos3);
         void torsionAngle(int pos1, int pos2, int pos3, int pos4);
-        void renderMolecule();
+        void createMolecule();
 
 
         // std::string getSequence ()
@@ -48,6 +49,39 @@ class Molecule
             return mass;
         }
 
+        std::vector<std::vector<float>> fillAtomsVertexData ()
+        {
+            std::vector<std::vector<float>> vector {};
+            for (std::vector<float>& data: atomsVertexData){
+                vector.push_back(data);
+            }
+            return vector;
+        }
+
+        std::vector<std::vector<int>> fillAtomsIndexData ()
+        {
+            std::vector<std::vector<int>> vector {};
+            for (std::vector<int>& data: atomsVertexIndex){
+                vector.push_back(data);
+            }
+            return vector;
+        }
+
+        void fillAtomsVertexSize (std::vector<float> vector)
+        {
+            for (float& data: atomsVertexSize){
+                vector.push_back(data);
+            }
+        }
+
+        void fillAtomsIndexSize (std::vector<float> vector)
+        {
+            for (float& data: atomsIndexSize){
+                vector.push_back(data);
+            }
+        }
+
+        
 };
 
 #endif

@@ -71,6 +71,8 @@ void Sphere::buildVertices ()
         }
     }
 
+    bufferSizeVertex = vertexVector.size() * sizeof(float);
+
 }
 
 void Sphere::generateTriangles()
@@ -104,6 +106,8 @@ void Sphere::generateTriangles()
             }
         }
     }
+
+    bufferSizeIndex = vertexIndex.size() * sizeof(int);
 }
 
 void Sphere::draw()

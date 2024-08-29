@@ -20,11 +20,23 @@ Camera::Camera(Vector3f inPosition, float fov, float near, float far, float widt
     this->cameraUp = NormalizeVector(cU);
 }
 
-void Camera::Init ()
+void Camera::Init (int status)
 {
-    Vector3f cD {look.x - position.x, look.y - position.y, look.z - position.z};
-    this->cameraDirection = NormalizeVector(cD);
+    Vector3f cD {};
+    if (status == 0) {
+        cD.x = look.x - position.x;
+        cD.y = look.y - position.y;
+        cD.z = look.z - position.z;
+        this->cameraDirection = NormalizeVector(cD);
+    } else {
+        cD.x = 0;
+        cD.y = 0;
+        cD.z = - position.z;
+        this->cameraDirection = NormalizeVector(cD);
+    }
 
+    // Vector3f cD {look.x - position.x, look.y - position.y, look.z - position.z};
+    // this->cameraDirection = NormalizeVector(cD);
     Vector3f cR {crossProduct(cameraDirection, up)};
     this->cameraRight = NormalizeVector(cR);
 
@@ -33,14 +45,48 @@ void Camera::Init ()
 }
 
 
-void Camera::updatePosition (Vector3f inPosition)
+void Camera::updatePosition (unsigned char key)
 {
-    position.x = inPosition.x;
-    position.y = inPosition.y;
-    position.z = inPosition.z;
+    Vector3f orien = getOrientation();
+    Vector3f move = shiftSide();
+    switch (key)
+    {
+    case 's':
+        position.y += speed;
+        //pivot.y += speed;
+        break;
+
+    case 'w':
+        position.y -= speed;
+        //pivot.y -= speed;
+        break;
+    
+    case 'a':
+        position.x += speed * move.x;
+        position.y += speed * move.y;
+        position.z += speed * move.z;
+
+        // pivot.x += speed * move.x;
+        // pivot.y += speed * move.y;
+        // pivot.z += speed * move.z;
+        break;
+
+    case 'd':
+        position.x -= speed * move.x;
+        position.y -= speed * move.y;
+        position.z -= speed * move.z;
+
+        // pivot.x -= speed * move.x;
+        // pivot.y -= speed * move.y;
+        // pivot.z -= speed * move.z;
+        break;
+    }
+    // position.x = inPosition.x;
+    // position.y = inPosition.y;
+    // position.z = inPosition.z;
     //std::cout << "x is " << position.x << ",y is " << position.y << " and z is "<< position.z<<". \n";
 
-    //Init();
+    Init(1);
 }
 
 void Camera::addShader(unsigned int shaderProgramIn)
@@ -50,6 +96,7 @@ void Camera::addShader(unsigned int shaderProgramIn)
 
 void Camera::view()
 {
+    //std::cout << "x is " << position.x << ",y is " << position.y << " and z is "<< position.z<<". \n";
     //view matrix
     Matrix4 posMatrix {1.0f};
     posMatrix.matrix[12] = -position.x;
@@ -67,12 +114,9 @@ void Camera::view()
     lookAtMatrix.matrix[6] = -cameraDirection.y;
     lookAtMatrix.matrix[10] = -cameraDirection.z;
     Matrix4 view {Multiply4x4(lookAtMatrix.matrix,posMatrix.matrix)};
-    // Matrix4 view {1.0f};
-    // Vector3f rotateX {0,1,0};
-    // MatrixTransform transfromView {view};
-    // transfromView.rotate(rotateX, yaw);
-    // transfromView.translate(position);
-    // Matrix4 newView = transfromView.getMatrix();
+    //view.print();
+    //lookAtMatrix.print();
+    //posMatrix.print();
 
     //projection matrix
     Matrix4 proj {1.0f};
@@ -82,6 +126,7 @@ void Camera::view()
     Matrix4 newProj = projTransform.getMatrix();
 
     Matrix4 camera {Multiply4x4(newProj.matrix, view.matrix)};
+    //camera.print();
 
     int projLocation {glGetUniformLocation(shaderProgram, "camera")};
     glUniformMatrix4fv(projLocation, 1, GL_FALSE, &camera.matrix[0]);
@@ -103,20 +148,21 @@ void Camera::rotate (float yawIn, float pitchIn)
     Matrix4 finalXRotation = xRotation.getMatrix();
     Vector3f tempVec1 {position.x - pivot.x, position.y - pivot.y, position.z - pivot.z};
     Vector3f tempVec2 = Multiply4x1(finalXRotation.matrix, tempVec1);
-    position.x = tempVec2.x;
-    position.y = tempVec2.y;
-    position.z = tempVec2.z;
+    tempVec2.x = tempVec2.x + pivot.x;
+    tempVec2.y = tempVec2.y + pivot.y;
+    tempVec2.z = tempVec2.z + pivot.z;
 
     // y rotation
     Matrix4 rotatey {1.0f};
     MatrixTransform yRotation {rotatey};
     yRotation.rotate(cameraRight, pitchIn);
     Matrix4 finalYRotation = yRotation.getMatrix();
-    Vector3f tempVec3 = Multiply4x1(finalYRotation.matrix, position);
-    position.x = tempVec3.x;
-    position.y = tempVec3.y;
-    position.z = tempVec3.z;
-    Init();
+    Vector3f tempVec3 {tempVec2.x - pivot.x, tempVec2.y - pivot.y, tempVec2.z - pivot.z};
+    Vector3f tempVec4 = Multiply4x1(finalYRotation.matrix, tempVec3);
+    position.x = tempVec4.x + pivot.x;
+    position.y = tempVec4.y + pivot.y;
+    position.z = tempVec4.z + pivot.z;
+    Init(0);
 
 
     // Vector3f direction {};

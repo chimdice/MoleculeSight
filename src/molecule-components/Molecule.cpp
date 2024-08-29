@@ -6,7 +6,6 @@
 #include "Atom.h"
 #include "Atom.cpp"
 #include "Molecule.h"
-#include "../utility/MatrixTransform.cpp"
 
 
 Molecule::Molecule (std::vector<Atom> &atomList)
@@ -133,87 +132,26 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
     }
 }
 
-void Molecule::renderMolecule ()
+void Molecule::createMolecule ()
 {
     int num {0};
-    //reading in shaders
-    std::string vertexShaderFilePath {"./shaders/shader.vert"};
-    std::string fragmentShaderFilePath {"./shaders/shader.frag"};
-
-    std::string vertexShaderFile {};
-    std::string fragmentShaderFile {};
-
-    readFile(vertexShaderFilePath, vertexShaderFile);
-    readFile(fragmentShaderFilePath, fragmentShaderFile);
-
-    unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
-    unsigned int transformLocation {glGetUniformLocation(shaderProgram, "transform")};
-    glUseProgram(shaderProgram);
-
-    Matrix4 id {1};
-    Vector3f test {1};
-    Vector3f test1 {1,0,0};
-    Vector3f test2 {0,0,-1};
-    MatrixTransform idTransfrom {id};
-    idTransfrom.translate(test2);
-    idTransfrom.scale(test);
-    idTransfrom.rotate(test1, 90);
-    float finalTransform[16] {};
-    idTransfrom.fillArray(finalTransform);
-
-    glUniformMatrix4fv(transformLocation, 1, GL_FALSE, &finalTransform[0]);
 
     //creating spheres
     for (Atom& atom: atoms) {
         Sphere atomSphere {atom.getRadius(), 10, 10};
         atomSphere.draw();
         
-        std::vector<float> tempTriangles {atomSphere.getVertex()};
+        std::vector<float> tempVertex {atomSphere.getVertex()};
         std::vector<int> tempVertexIndex {atomSphere.getVertexIndex()};
         int pos {1};
 
-        sphereVertex.insert(sphereVertex.end(), tempTriangles.begin(), tempTriangles.end());
-        sphereVertexIndex.insert(sphereVertexIndex.end(), tempVertexIndex.begin(), tempVertexIndex.end());
+        atomsVertexData.push_back(tempVertex);
+        atomsVertexIndex.push_back(tempVertexIndex);
+        // sphereVertexData.insert(sphereVertexData.end(), tempTriangles.begin(), tempTriangles.end());
+        // sphereVertexIndex.insert(sphereVertexIndex.end(), tempVertexIndex.begin(), tempVertexIndex.end());
         num += atomSphere.getNumTriangles();
+        atomsVertexSize.push_back(atomSphere.getVertexBufferSize());
+        atomsIndexSize.push_back(atomSphere.getIndexBufferSize());
     }
-
-    std::vector<float> testTriangle {
-        -0.5f,-0.5f,0.0f,1.0f,0.0f,0.0f,
-        0.0f,0.8f,0.0f,0.0f,1.0f,0.0f,
-        0.5f,0.5f,0.0f,0.0f,0.0f,1.0f
-    };
-
-    std::vector<int> testIndex {
-        0,1,2
-    };
-
-
-    GLuint vertexVbo {0};
-    GLuint ibo {0};
-
-    GLuint vao {0};
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glGenBuffers(1, &vertexVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glBufferData(GL_ARRAY_BUFFER, testTriangle.size()*sizeof(float), testTriangle.data(), GL_STATIC_DRAW);
-
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, testIndex.size()*sizeof(int), testIndex.data(), GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, 0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)(sizeof(float)*3));
-
-
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, testIndex.size(), GL_UNSIGNED_INT, NULL);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
 
 }
