@@ -172,4 +172,10 @@ Vector3f Multiply4x1(float matrix[16], Vector3f vector)
 
     return tempVector;
 }
+
+float DotProduct(Vector3f v1, Vector3f v2)
+{
+    return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+
 #endif

@@ -15,99 +15,129 @@ Sphere::Sphere(float radius, float numSectors, float numStacks)
 void Sphere::buildVertices ()
 {
     //clear vertices vector
-    std::vector<Vector4f>().swap(vertices);
-    std::vector<Vector4f>().swap(normalizedVertices);
+    std::vector<Vector3f>().swap(vertices);
+    std::vector<Vector3f>().swap(color);
     std::vector<float>().swap(vertexVector);
 
-    float x {}, y {}, z {};
-    float nX {}, nY {}, nZ {};
-    float rcos {};
-    float nRadius {1.0f/radius};
+    float psihAngle {90};
+    float thetaAngle {0};
+    float psiCountBy {180/(numStacks+1)};
+    float thetaCountBy {360/numSectors};
+    int count  {0};
+    
+    //top
+    Vector3f topVertices {0, 1, 0};
+    Vector3f topColor {1, 0, 0};
+    vertices.push_back(topVertices);
+    color.push_back(topColor);
+    vertexVector.push_back(0);
+    vertexVector.push_back(1);
+    vertexVector.push_back(0);
+    vertexVector.push_back(topColor.x);
+    vertexVector.push_back(topColor.y);
+    vertexVector.push_back(topColor.z);
+    count += 1;
 
-    float sectorStep {2*pi/numSectors};
-    float stackStep {pi/numStacks};
-    float sectorAngle {}, stackAngle {};
-
-    int vertexIndex {0};
-
-    for (int i  = 0; i < numStacks; i++) {
-
-        stackAngle = (pi/2) - (i*stackStep);
-        rcos = radius * std::cos(stackAngle);
-        z = radius * std::sin(stackAngle);
-        nZ = z *nRadius;
-
+    //middle section
+    for (int i = 0; i < numStacks; i++) {
+        psihAngle -= psiCountBy;
+        float psiRad {psihAngle * (pi/180)};
+        float y {radius*std::sin(psiRad)};
+        float xz {radius*std::cos(psiRad)};
+        Vector3f sectionColor {((float)std::rand()/RAND_MAX), ((float)std::rand()/RAND_MAX), ((float)std::rand()/RAND_MAX)};
         for (int j = 0; j < numSectors; j++) {
-            sectorAngle = j * sectorStep;
+            float thetaRad {thetaAngle * (pi/180)};
+            float x {xz*std::sin(thetaRad)};
+            float z {xz*std::cos(thetaRad)};
 
-            x = rcos * std::cos(sectorAngle);
-            nX = x *nRadius;
-
-            y = rcos * std::sin(sectorAngle);
-            nY = y * nRadius;
-
-            Vector4f vertex(x, y, z, vertexIndex);
-            Vector4f nVertex(nX, nY, nZ, vertexIndex);
-
-            vertices.push_back(vertex);
-            normalizedVertices.push_back(nVertex);
+            Vector3f vertexData {x, y, z};
+            vertices.push_back(vertexData);
 
             vertexVector.push_back(x);
             vertexVector.push_back(y);
             vertexVector.push_back(z);
+            vertexVector.push_back(sectionColor.x);
+            vertexVector.push_back(sectionColor.y);
+            vertexVector.push_back(sectionColor.z);
 
-            if (i%2 == 0) {
-                vertexVector.push_back(0.1);
-                vertexVector.push_back(0.4);
-                vertexVector.push_back(0.7);
-            } else {
-                vertexVector.push_back(0.7);
-                vertexVector.push_back(0.2);
-                vertexVector.push_back(0.5);
-            }
-            
-
-            vertexIndex += 1;
+            color.push_back(sectionColor);
+            thetaAngle += thetaCountBy;
+            count += 1;
         }
+        thetaAngle = 0;
     }
 
-    bufferSizeVertex = vertexVector.size() * sizeof(float);
-
+    //bottom
+    Vector3f botVertices {0, -1, 0};
+    Vector3f botColor {0, 0, 1};
+    vertices.push_back(botVertices);
+    color.push_back(botColor);
+    vertexVector.push_back(0);
+    vertexVector.push_back(-1);
+    vertexVector.push_back(0);
+    vertexVector.push_back(botColor.x);
+    vertexVector.push_back(botColor.y);
+    vertexVector.push_back(botColor.z);
+    count += 1;
 }
 
 void Sphere::generateTriangles()
 {
     std::vector<int>().swap(vertexIndex);
-    int k1 {}, k2 {};
 
-    for (int i = 0; i < numStacks; i++) {
-        k1 = i * numSectors;
-        k2 = k1 + numSectors;
+    float end {vertices.size()-1};
+    //top and bottom triangles
+    for (int i = 0; i < numSectors; i++) {
+        float k1 {i+1};
+        float k2 {};
+        if (i == (numSectors-1)) {
+            k2 = 1;
+        } else {
+            k2 = i + 2;
+        }
 
-        for (int j = 0; j < numSectors; j++, k1++, k2++) {
-            if (i != 0) {
-                // vertex one
-                vertexIndex.push_back(vertices[k1].a);
-                //vertex two
-                vertexIndex.push_back(vertices[k2].a);
-                //vertex three
-                vertexIndex.push_back(vertices[k1+1].a);
-                numTriangles += 1;
+        vertexIndex.push_back(0);
+        vertexIndex.push_back(k2);
+        vertexIndex.push_back(k1);
+
+        vertexIndex.push_back(end);
+        vertexIndex.push_back(end - k1);
+        vertexIndex.push_back(end - k2);
+    }
+    //middle triangles
+    for (int i = 0; i < (numStacks-1); i++) {
+        float k3 {1 +(i*numSectors)};
+        float k4 {k3+numSectors};
+        float k5 {};
+        for (int j=0; j < numSectors; j++) {
+
+            if (j == (numSectors-1)) {
+                k5 = k3 - (numSectors-1);
+                vertexIndex.push_back(k3);
+                vertexIndex.push_back(k5);
+                vertexIndex.push_back(k4);
+
+                vertexIndex.push_back(k4);
+                vertexIndex.push_back(k5);
+                vertexIndex.push_back(k5+numSectors);
+                // std::cout << k3 <<" "<< k5 <<" "<< k4 <<"\n";
+                // std::cout << k4 <<" "<< k5 <<" "<< k5+numSectors <<"\n";
+            } else {
+                vertexIndex.push_back(k3);
+                vertexIndex.push_back(k3+1);
+                vertexIndex.push_back(k4);
+
+                vertexIndex.push_back(k4);
+                vertexIndex.push_back(k3+1);
+                vertexIndex.push_back(k4+1);
+                // std::cout << k3 <<" "<< k3+1 <<" "<< k4 <<"\n";
+                // std::cout << k4 <<" "<< k3+1 <<" "<< k4+1 <<"\n";
             }
 
-            if (i != (numStacks-1)) {
-                // vertex one
-                vertexIndex.push_back(vertices[k1+1].a);
-                //vertex two
-                vertexIndex.push_back(vertices[k2].a);
-                //vertex three
-                vertexIndex.push_back(vertices[k2+1].a);
-                numTriangles += 1;
-            }
+            k3+=1;
+            k4+=1;
         }
     }
-
-    bufferSizeIndex = vertexIndex.size() * sizeof(int);
 }
 
 void Sphere::draw()

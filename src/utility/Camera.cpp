@@ -141,6 +141,12 @@ Vector3f Camera::shiftSide ()
 void Camera::rotate (float yawIn, float pitchIn)
 {
 
+    float dotValue {DotProduct(cameraDirection, up)};
+    // std::cout << dotValue <<" and "<< pitchIn << '\n';
+    if (std::abs(dotValue) > 0.99)
+    {
+        yawIn = 0;
+    }
     // x rotation
     Matrix4 rotatex {1.0f};
     MatrixTransform xRotation {rotatex};

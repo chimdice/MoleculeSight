@@ -46,24 +46,19 @@ void spin ()
 static void RenderCB ()
 {
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     float byteTrack {0};
     float byteTrack2 {0};
     std::vector<std::vector<float>> molVertexData {};
     std::vector<std::vector<int>> molVertexIndex {};
-    std::vector<float> molVertexSize {};
-    std::vector<float> molIndexSize {};
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (Molecule& mol: allMol) {
         mol.createMolecule();
         molVertexData = mol.fillAtomsVertexData();
         molVertexIndex = mol.fillAtomsIndexData();
-        mol.fillAtomsVertexSize(molVertexSize);
-        mol.fillAtomsIndexSize(molIndexSize);
-    }
-
-    std::cout << molVertexData.size() << '\n';
+     }
 
     float vertexSize = btyeSize2DVector(molVertexData);
     float indexSize = btyeSize2DVector(molVertexIndex);
@@ -71,31 +66,33 @@ static void RenderCB ()
     std::vector<float> b1 {fillVector(molVertexData)};
     std::vector<int> b2 {fillVector(molVertexIndex)};
 
-    std::vector<float> testTriangle {
-        -0.5f,-0.5f,-0.5f,1.0f,0.0f,0.0f,
-        -0.5f,0.5f,-0.5f,1.0f,0.0f,0.0f,
-        0.5f,0.5f,-0.5f,0.0f,1.0f,0.0f,
-        0.5f,-0.5f,-0.5f,0.0f,1.0f,0.0f,
+    //std::cout << b1.size() <<" and "<<b2.size()<<'\n';
 
-        -0.5f,-0.5f,0.5f,1.0f,0.0f,1.0f,
-        -0.5f,0.5f,0.5f,1.0f,0.0f,1.0f,
-        0.5f,0.5f,0.5f,0.0f,1.0f,1.0f,
-        0.5f,-0.5f,0.5f,0.0f,1.0f,1.0f
-    };
+    // std::vector<float> b1 {
+    //     -0.5f,-0.5f,-0.5f,1.0f,0.0f,0.0f,
+    //     -0.5f,0.5f,-0.5f,1.0f,0.0f,0.0f,
+    //     0.5f,0.5f,-0.5f,0.0f,1.0f,0.0f,
+    //     0.5f,-0.5f,-0.5f,0.0f,1.0f,0.0f,
 
-    std::vector<int> testIndex {
-        //front
-        0,1,2,
-        0,2,3,
-        //back
-        4,5,6,
-        4,6,7,
-        //sides
-        3,2,6,
-        3,6,7,
-        0,1,5,
-        0,5,4,
-    };
+    //     -0.5f,-0.5f,0.5f,1.0f,0.0f,1.0f,
+    //     -0.5f,0.5f,0.5f,1.0f,0.0f,1.0f,
+    //     0.5f,0.5f,0.5f,0.0f,1.0f,1.0f,
+    //     0.5f,-0.5f,0.5f,0.0f,1.0f,1.0f
+    // };
+
+    // std::vector<int> b2 {
+         //front
+    //     0,1,2,
+    //     0,2,3,
+         //back
+    //     4,5,6,
+    //     4,6,7,
+         //sides
+    //     3,2,6,
+    //     3,6,7,
+    //     0,1,5,
+    //     0,5,4,
+    // };
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
     std::string fragmentShaderFilePath {"./shaders/shader.frag"};
@@ -113,7 +110,7 @@ static void RenderCB ()
     Vector3f rotateModel{0.1f};
     MatrixTransform modelTransform {model};
     //modelTransform.rotate(rotateModel, -angle);
-    modelTransform.scale(rotateModel);
+    //modelTransform.scale(rotateModel);
     Matrix4 newModel = modelTransform.getMatrix();
 
     glUseProgram(shaderProgram);
@@ -132,7 +129,6 @@ static void RenderCB ()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    std::cout << b1.size() << " " << b2.size() << " \n";
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBufferData(GL_ARRAY_BUFFER, b1.size()*sizeof(float), b1.data(), GL_STATIC_DRAW);
@@ -144,9 +140,9 @@ static void RenderCB ()
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ARRAY_BUFFER, b2.size()*sizeof(float), b2.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, b2.size()*sizeof(int), b2.data(), GL_STATIC_DRAW);
     // for (int i = 0; i < molVertexIndex.size(); i++) {
-    //     glBufferSubData(GL_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[i], molVertexIndex[i].data());
+    //     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[i], molVertexIndex[i].data());
     //     byteTrack2 += molIndexSize[i];
     // }
     //glBufferSubData(GL_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[0], molVertexIndex[0].data());

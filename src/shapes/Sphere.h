@@ -10,8 +10,8 @@
 class Sphere
 {
     private:
-        std::vector<Vector4f> vertices {};
-        std::vector<Vector4f> normalizedVertices {};
+        std::vector<Vector3f> vertices {};
+        std::vector<Vector3f> color {};
         std::vector<float> vertexVector {};
         std::vector<int> vertexIndex {};
 

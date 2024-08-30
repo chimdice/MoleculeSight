@@ -147,8 +147,6 @@ void Molecule::createMolecule ()
 
         atomsVertexData.push_back(tempVertex);
         atomsVertexIndex.push_back(tempVertexIndex);
-        // sphereVertexData.insert(sphereVertexData.end(), tempTriangles.begin(), tempTriangles.end());
-        // sphereVertexIndex.insert(sphereVertexIndex.end(), tempVertexIndex.begin(), tempVertexIndex.end());
         num += atomSphere.getNumTriangles();
         atomsVertexSize.push_back(atomSphere.getVertexBufferSize());
         atomsIndexSize.push_back(atomSphere.getIndexBufferSize());
