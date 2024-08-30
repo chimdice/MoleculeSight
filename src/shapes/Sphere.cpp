@@ -33,9 +33,9 @@ void Sphere::buildVertices ()
     vertexVector.push_back(0);
     vertexVector.push_back(1);
     vertexVector.push_back(0);
-    vertexVector.push_back(topColor.x);
-    vertexVector.push_back(topColor.y);
-    vertexVector.push_back(topColor.z);
+    // vertexVector.push_back(topColor.x);
+    // vertexVector.push_back(topColor.y);
+    // vertexVector.push_back(topColor.z);
     count += 1;
 
     //middle section
@@ -56,9 +56,9 @@ void Sphere::buildVertices ()
             vertexVector.push_back(x);
             vertexVector.push_back(y);
             vertexVector.push_back(z);
-            vertexVector.push_back(sectionColor.x);
-            vertexVector.push_back(sectionColor.y);
-            vertexVector.push_back(sectionColor.z);
+            // vertexVector.push_back(sectionColor.x);
+            // vertexVector.push_back(sectionColor.y);
+            // vertexVector.push_back(sectionColor.z);
 
             color.push_back(sectionColor);
             thetaAngle += thetaCountBy;
@@ -75,9 +75,9 @@ void Sphere::buildVertices ()
     vertexVector.push_back(0);
     vertexVector.push_back(-1);
     vertexVector.push_back(0);
-    vertexVector.push_back(botColor.x);
-    vertexVector.push_back(botColor.y);
-    vertexVector.push_back(botColor.z);
+    // vertexVector.push_back(botColor.x);
+    // vertexVector.push_back(botColor.y);
+    // vertexVector.push_back(botColor.z);
     count += 1;
 }
 

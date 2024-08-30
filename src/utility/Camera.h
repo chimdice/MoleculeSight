@@ -32,13 +32,14 @@ class Camera
         float near {};
         float far {};
         unsigned int shaderProgram {};
+        unsigned int light {};
 
 
 
     public:
         Camera (Vector3f inPosition, float fov, float near, float far, float width, float height);
         void updatePosition (unsigned char key);
-        void addShader(unsigned int shaderProgram);
+        void addShader(unsigned int shaderProgram, unsigned int light);
         void view ();
         void rotate (float yawIn, float pitchIn);
         void Init (int status);
