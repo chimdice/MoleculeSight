@@ -33,15 +33,9 @@ std::vector<Atom> hs {h1};
 Molecule molH (hs);
 std::vector<Molecule> allMol {molH};
 
-void spin ()
-{
-    angle += 1;
-    if (angle > 360)
-    {
-        angle = 0;
-    }
-    glutPostRedisplay();
-}
+void keyboardInput(unsigned char key, int x, int y);
+void mouseEvent (int x, int y);
+void mouseCB (int button, int state, int x, int y);
 
 static void RenderCB ()
 {
@@ -66,33 +60,6 @@ static void RenderCB ()
     std::vector<float> b1 {fillVector(molVertexData)};
     std::vector<int> b2 {fillVector(molVertexIndex)};
 
-    //std::cout << b1.size() <<" and "<<b2.size()<<'\n';
-
-    // std::vector<float> b1 {
-    //     -0.5f,-0.5f,-0.5f,1.0f,0.0f,0.0f,
-    //     -0.5f,0.5f,-0.5f,1.0f,0.0f,0.0f,
-    //     0.5f,0.5f,-0.5f,0.0f,1.0f,0.0f,
-    //     0.5f,-0.5f,-0.5f,0.0f,1.0f,0.0f,
-
-    //     -0.5f,-0.5f,0.5f,1.0f,0.0f,1.0f,
-    //     -0.5f,0.5f,0.5f,1.0f,0.0f,1.0f,
-    //     0.5f,0.5f,0.5f,0.0f,1.0f,1.0f,
-    //     0.5f,-0.5f,0.5f,0.0f,1.0f,1.0f
-    // };
-
-    // std::vector<int> b2 {
-         //front
-    //     0,1,2,
-    //     0,2,3,
-         //back
-    //     4,5,6,
-    //     4,6,7,
-         //sides
-    //     3,2,6,
-    //     3,6,7,
-    //     0,1,5,
-    //     0,5,4,
-    // };
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
     std::string fragmentShaderFilePath {"./shaders/shader.frag"};
@@ -105,47 +72,38 @@ static void RenderCB ()
 
     unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
 
-    //model matrix
-    Matrix4 model {1.0f};
-    Vector3f rotateModel{0.1f};
-    MatrixTransform modelTransform {model};
-    //modelTransform.rotate(rotateModel, -angle);
-    //modelTransform.scale(rotateModel);
-    Matrix4 newModel = modelTransform.getMatrix();
+    //model matrices
+    Matrix4 model1 {1.0f};
+    Vector3f translate1{-2, 0, 0};
+    MatrixTransform modelTransform {model1};
+    modelTransform.translate(translate1);
+    Matrix4 newModel1 = modelTransform.getMatrix();
+
+    Matrix4 model2 {1.0f};
+    Vector3f translate2{2, 0, 0};
+    MatrixTransform modelTransform2 {model2};
+    modelTransform2.translate(translate2);
+    Matrix4 newModel2 = modelTransform2.getMatrix();
 
     glUseProgram(shaderProgram);
 
-    //windowCamera.updatePosition(pos);
     windowCamera.addShader(shaderProgram);
     windowCamera.view();
 
-    int modelLocation {glGetUniformLocation(shaderProgram, "model")};
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel.matrix[0]);
-
     GLuint vertexVbo {0};
     GLuint ibo {0};
-
     GLuint vao {0};
+
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBufferData(GL_ARRAY_BUFFER, b1.size()*sizeof(float), b1.data(), GL_STATIC_DRAW);
-    // for (int i = 0; i < molVertexData.size(); i++) {
-    //     glBufferSubData(GL_ARRAY_BUFFER, byteTrack, byteTrack+ molVertexSize[i], molVertexData[i].data());
-    //     byteTrack += molVertexSize[i];
-    // }
-    //glBufferSubData(GL_ARRAY_BUFFER, byteTrack, byteTrack+ molVertexSize[0], molVertexData[0].data());
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, b2.size()*sizeof(int), b2.data(), GL_STATIC_DRAW);
-    // for (int i = 0; i < molVertexIndex.size(); i++) {
-    //     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[i], molVertexIndex[i].data());
-    //     byteTrack2 += molIndexSize[i];
-    // }
-    //glBufferSubData(GL_ARRAY_BUFFER, byteTrack2, byteTrack2+ molIndexSize[0], molVertexIndex[0].data());
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -154,9 +112,17 @@ static void RenderCB ()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, 0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)(sizeof(float)*3));
 
+    int modelLocation {glGetUniformLocation(shaderProgram, "model")};
 
+    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel1.matrix[0]);
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, NULL);
+
+    // glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel2.matrix[0]);
+    // glBindVertexArray(vao);
+    // glDrawElements(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, NULL);
+
+
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
@@ -168,11 +134,6 @@ static void myInit ()
     glEnable(GL_DEPTH_TEST);
     glCullFace(GL_BACK);
 }
-
-void keyboardInput(unsigned char key, int x, int y);
-void specialKeyInput (int key, int x, int y);
-void mouseEvent (int x, int y);
-void mouseCB (int button, int state, int x, int y);
 
 
 int main (int argc, char** argv)
@@ -193,57 +154,16 @@ int main (int argc, char** argv)
 
     glutDisplayFunc(RenderCB);
     glutKeyboardFunc(keyboardInput);
-    glutSpecialFunc(specialKeyInput);
     glutMouseFunc(mouseCB);
     glutMotionFunc(mouseEvent);
-    //glutIdleFunc(spin);
     glutMainLoop();
     return 0;
 }
 
 void keyboardInput(unsigned char key, int x, int y)
 {
-    
-    // switch (key)
-    // {
-    // case 's':
-    //     pos.y += speed;
-    //     piv.y += speed;
-    //     break;
-
-    // case 'w':
-    //     pos.y -= speed;
-    //     piv.y -= speed;
-    //     break;
-    
-    // case 'a':
-    //     pos.x += speed * move.x;
-    //     pos.y += speed * move.y;
-    //     pos.z += speed * move.z;
-
-    //     piv.x += speed * move.x;
-    //     piv.y += speed * move.y;
-    //     piv.z += speed * move.z;
-    //     break;
-
-    // case 'd':
-    //     pos.x -= speed * move.x;
-    //     pos.y -= speed * move.y;
-    //     pos.z -= speed * move.z;
-
-    //     piv.x -= speed * move.x;
-    //     piv.y -= speed * move.y;
-    //     piv.z -= speed * move.z;
-    //     break;
-    // }
-
     windowCamera.updatePosition(key);
     glutPostRedisplay();
-}
-
-void specialKeyInput (int key, int x, int y)
-{
-    
 }
 
 void mouseEvent (int x, int y)
@@ -262,22 +182,6 @@ void mouseEvent (int x, int y)
         windowCamera.rotate(-xDiff, -yDiff);
         glutPostRedisplay();
     }
-
-    // if (yaw > 0) {
-    //     yaw -= 360;
-    // } else if (yaw < -360) {
-    //     yaw += 360;
-    // }
-
-    // if (pitch > 89) {
-    //     pitch = 89;
-    // } else if (pitch < -89) {
-    //     pitch = -89;
-    // }
-
-    // std::cout << " yaw value is " << yaw << ". \n";
-    // windowCamera.rotate(yaw, pitch);
-    // glutPostRedisplay();
 }
 
 void mouseCB (int button, int state, int x, int y)
