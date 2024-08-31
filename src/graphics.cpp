@@ -14,6 +14,8 @@ Vector3f pos {0,0,3};
 Vector3f piv {0,0,0};
 Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, width, height);
 
+float light[3] {0.0f, 1.0f, 0.0f};
+
 //speed
 float speed {0.1f};
 
@@ -142,13 +144,18 @@ static void RenderCB ()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, b2.size()*sizeof(int), b2.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)0 + sizeof(float)*3);
 
     int modelLocation {glGetUniformLocation(shaderProgram, "model")};
-
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel1.matrix[0]);
+
+    int lightLocation {glGetUniformLocation(shaderProgram, "light")};
+    glUniform3fv(lightLocation, 1, &light[0]);
+
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);

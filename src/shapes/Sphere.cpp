@@ -230,6 +230,13 @@ void Sphere::prepareVbo()
         vertexVector.push_back(vertex.vertices.x);
         vertexVector.push_back(vertex.vertices.y);
         vertexVector.push_back(vertex.vertices.z);
+
+        vertex.updateNormalVector();
+
+        vertexVector.push_back(vertex.normal.x);
+        vertexVector.push_back(vertex.normal.y);
+        vertexVector.push_back(vertex.normal.z);
+
     }
 
 }
