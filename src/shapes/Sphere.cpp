@@ -31,9 +31,6 @@ void Sphere::buildVertices ()
     vertexVector.push_back(0);
     vertexVector.push_back(1);
     vertexVector.push_back(0);
-    // vertexVector.push_back(topColor.x);
-    // vertexVector.push_back(topColor.y);
-    // vertexVector.push_back(topColor.z);
     count += 1;
 
     //middle section
@@ -54,9 +51,6 @@ void Sphere::buildVertices ()
             vertexVector.push_back(x);
             vertexVector.push_back(y);
             vertexVector.push_back(z);
-            // vertexVector.push_back(sectionColor.x);
-            // vertexVector.push_back(sectionColor.y);
-            // vertexVector.push_back(sectionColor.z);
 
             thetaAngle += thetaCountBy;
             count += 1;
@@ -71,9 +65,6 @@ void Sphere::buildVertices ()
     vertexVector.push_back(0);
     vertexVector.push_back(-1);
     vertexVector.push_back(0);
-    // vertexVector.push_back(botColor.x);
-    // vertexVector.push_back(botColor.y);
-    // vertexVector.push_back(botColor.z);
     count += 1;
 }
 
@@ -92,13 +83,49 @@ void Sphere::generateTriangles()
             k2 = i + 2;
         }
 
+        //top
         vertexIndex.push_back(0);
         vertexIndex.push_back(k2);
         vertexIndex.push_back(k1);
 
+        Vector3f vab {
+                        vertices[k1].vertices.x - vertices[0].vertices.x,
+                        vertices[k1].vertices.y - vertices[0].vertices.y,
+                        vertices[k1].vertices.z - vertices[0].vertices.z
+                    };
+
+        Vector3f vac {
+                        vertices[k2].vertices.x - vertices[0].vertices.x,
+                        vertices[k2].vertices.y - vertices[0].vertices.y,
+                        vertices[k2].vertices.z - vertices[0].vertices.z
+                    };
+
+        Vector3f norm1 = NormalizeVector(crossProduct(vab, vac));
+        vertices[0].allNormals.push_back(norm1);
+        vertices[k1].allNormals.push_back(norm1);
+        vertices[k2].allNormals.push_back(norm1);
+
+        //bottom
         vertexIndex.push_back(end);
         vertexIndex.push_back(end - k1);
         vertexIndex.push_back(end - k2);
+
+        Vector3f vab2 {
+                        vertices[end - k1].vertices.x - vertices[end].vertices.x,
+                        vertices[end - k1].vertices.y - vertices[end].vertices.y,
+                        vertices[end - k1].vertices.z - vertices[end].vertices.z
+                    };
+
+        Vector3f vac2 {
+                        vertices[end - k2].vertices.x - vertices[end].vertices.x,
+                        vertices[end - k2].vertices.y - vertices[end].vertices.y,
+                        vertices[end - k2].vertices.z - vertices[end].vertices.z
+                    };
+
+        Vector3f norm2 = NormalizeVector(crossProduct(vab2, vac2));
+        vertices[end].allNormals.push_back(norm2);
+        vertices[end - k1].allNormals.push_back(norm2);
+        vertices[end - k2].allNormals.push_back(norm2);
     }
     //middle triangles
     for (int i = 0; i < (numStacks-1); i++) {
@@ -116,8 +143,43 @@ void Sphere::generateTriangles()
                 vertexIndex.push_back(k4);
                 vertexIndex.push_back(k5);
                 vertexIndex.push_back(k5+numSectors);
-                // std::cout << k3 <<" "<< k5 <<" "<< k4 <<"\n";
-                // std::cout << k4 <<" "<< k5 <<" "<< k5+numSectors <<"\n";
+
+                //triangle 1
+                Vector3f vab {
+                        vertices[k4].vertices.x - vertices[k3].vertices.x,
+                        vertices[k4].vertices.y - vertices[k3].vertices.y,
+                        vertices[k4].vertices.z - vertices[k3].vertices.z
+                    };
+
+                Vector3f vac {
+                                vertices[k5].vertices.x - vertices[k3].vertices.x,
+                                vertices[k5].vertices.y - vertices[k3].vertices.y,
+                                vertices[k5].vertices.z - vertices[k3].vertices.z
+                            };
+
+                Vector3f norm1 = NormalizeVector(crossProduct(vab, vac));
+                vertices[k3].allNormals.push_back(norm1);
+                vertices[k4].allNormals.push_back(norm1);
+                vertices[k5].allNormals.push_back(norm1);
+
+                //triangle 2
+                 Vector3f vab2 {
+                        vertices[k5].vertices.x - vertices[k4].vertices.x,
+                        vertices[k5].vertices.y - vertices[k4].vertices.y,
+                        vertices[k5].vertices.z - vertices[k4].vertices.z
+                    };
+
+                Vector3f vac2 {
+                        vertices[k5+numSectors].vertices.x - vertices[k4].vertices.x,
+                        vertices[k5+numSectors].vertices.y - vertices[k4].vertices.y,
+                        vertices[k5+numSectors].vertices.z - vertices[k4].vertices.z
+                    };
+
+                Vector3f norm2 = NormalizeVector(crossProduct(vab2, vac2));
+                vertices[k5+numSectors].allNormals.push_back(norm2);
+                vertices[k4].allNormals.push_back(norm2);
+                vertices[k5].allNormals.push_back(norm2);
+
             } else {
                 vertexIndex.push_back(k3);
                 vertexIndex.push_back(k3+1);
@@ -126,8 +188,43 @@ void Sphere::generateTriangles()
                 vertexIndex.push_back(k4);
                 vertexIndex.push_back(k3+1);
                 vertexIndex.push_back(k4+1);
-                // std::cout << k3 <<" "<< k3+1 <<" "<< k4 <<"\n";
-                // std::cout << k4 <<" "<< k3+1 <<" "<< k4+1 <<"\n";
+                
+                //triangle 1
+                Vector3f vab {
+                        vertices[k4].vertices.x - vertices[k3].vertices.x,
+                        vertices[k4].vertices.y - vertices[k3].vertices.y,
+                        vertices[k4].vertices.z - vertices[k3].vertices.z
+                    };
+
+                Vector3f vac {
+                                vertices[k3+1].vertices.x - vertices[k3].vertices.x,
+                                vertices[k3+1].vertices.y - vertices[k3].vertices.y,
+                                vertices[k3+1].vertices.z - vertices[k3].vertices.z
+                            };
+
+                Vector3f norm1 = NormalizeVector(crossProduct(vab, vac));
+                vertices[k3].allNormals.push_back(norm1);
+                vertices[k4].allNormals.push_back(norm1);
+                vertices[k3+1].allNormals.push_back(norm1);
+
+                //triangle 2
+                 Vector3f vab2 {
+                        vertices[k3+1].vertices.x - vertices[k4].vertices.x,
+                        vertices[k3+1].vertices.y - vertices[k4].vertices.y,
+                        vertices[k3+1].vertices.z - vertices[k4].vertices.z
+                    };
+
+                Vector3f vac2 {
+                        vertices[k4+1].vertices.x - vertices[k4].vertices.x,
+                        vertices[k4+1].vertices.y - vertices[k4].vertices.y,
+                        vertices[k4+1].vertices.z - vertices[k4].vertices.z
+                    };
+
+                Vector3f norm2 = NormalizeVector(crossProduct(vab2, vac2));
+                vertices[k3+1].allNormals.push_back(norm2);
+                vertices[k4].allNormals.push_back(norm2);
+                vertices[k4+1].allNormals.push_back(norm2);
+
             }
 
             k3+=1;
