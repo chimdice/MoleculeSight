@@ -63,21 +63,15 @@ static void RenderCB ()
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
     std::string fragmentShaderFilePath {"./shaders/shader.frag"};
-    std::string vertexLightFilePath {"./shaders/light.vert"};
-    std::string fragmentLightFilePath {"./shaders/light.frag"};
 
     std::string vertexShaderFile {};
     std::string fragmentShaderFile {};
-    std::string vertexLightFile {};
-    std::string fragmentLightFile {};
+
 
     readFile(vertexShaderFilePath, vertexShaderFile);
     readFile(fragmentShaderFilePath, fragmentShaderFile);
-    readFile(vertexLightFilePath, vertexLightFile);
-    readFile(fragmentLightFilePath, fragmentLightFile);
 
     unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
-    unsigned int lightProgram {CreateShaders(vertexLightFile, fragmentLightFile)};
 
     //model matrices
     Matrix4 model1 {1.0f};
@@ -94,7 +88,7 @@ static void RenderCB ()
 
     glUseProgram(shaderProgram);
 
-    windowCamera.addShader(shaderProgram, lightProgram);
+    windowCamera.addShader(shaderProgram);
     windowCamera.view();
 
     //lighting
@@ -157,34 +151,6 @@ static void RenderCB ()
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel1.matrix[0]);
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, NULL);
-    glDisableVertexAttribArray(0);
-
-    glUseProgram(lightProgram);
-    GLuint vboLight {1};
-    GLuint iboLight {1};
-    GLuint vaoLight {1};
-
-    glGenVertexArrays(1, &vaoLight);
-    glBindVertexArray(vaoLight);
-
-    glGenBuffers(1, &vboLight);
-    glBindBuffer(GL_ARRAY_BUFFER, vboLight);
-    glBufferData(GL_ARRAY_BUFFER, lightVertices.size()*sizeof(float), lightVertices.data(), GL_STATIC_DRAW);
-
-    glGenBuffers(1, &iboLight);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboLight);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, lightIndex.size()*sizeof(int), lightIndex.data(), GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vboLight);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboLight);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    int modelLocation2 {glGetUniformLocation(lightProgram, "model")};
-
-    glUniformMatrix4fv(modelLocation2, 1, GL_FALSE, &newModel2.matrix[0]);
-    glBindVertexArray(vaoLight);
-    glDrawElements(GL_TRIANGLES, lightIndex.size(), GL_UNSIGNED_INT, NULL);
     glDisableVertexAttribArray(0);
 
     glutSwapBuffers();

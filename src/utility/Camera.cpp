@@ -89,10 +89,9 @@ void Camera::updatePosition (unsigned char key)
     Init(1);
 }
 
-void Camera::addShader(unsigned int shaderProgramIn ,unsigned int lightIn)
+void Camera::addShader(unsigned int shaderProgramIn)
 {
     shaderProgram = shaderProgramIn;
-    light = lightIn;
 }
 
 void Camera::view()
@@ -132,8 +131,6 @@ void Camera::view()
     int projLocation {glGetUniformLocation(shaderProgram, "camera")};
     glUniformMatrix4fv(projLocation, 1, GL_FALSE, &camera.matrix[0]);
 
-    int projLocation2 {glGetUniformLocation(light, "camera")};
-    glUniformMatrix4fv(projLocation2, 1, GL_FALSE, &camera.matrix[0]);
 }
 
 Vector3f Camera::shiftSide ()
