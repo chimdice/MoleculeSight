@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 // class and structs
 
@@ -104,6 +105,46 @@ struct Vector4f
         this->a = a;
     }
 
+};
+
+struct Vertex
+{
+    Vector3f vertices {};
+    Vector3f normal {};
+
+    Vertex(Vector3f vertices)
+    {
+        this->vertices=vertices;
+    }
+
+    Vertex()
+    {
+        
+    }
+
+    //normals
+    std::vector<Vector3f> allNormals {};
+    void updateNormalVector ()
+    {
+        int size {allNormals.size()};
+        float sumX {0};
+        float sumY {0};
+        float sumZ {0};
+
+        for (Vector3f& v:allNormals) {
+            sumX += v.x;
+            sumY += v.y;
+            sumZ += v.z;
+        }
+
+        sumX/=size;
+        sumY/=size;
+        sumZ/=size;
+
+        normal.x = sumX;
+        normal.y = sumY;
+        normal.z = sumZ;
+    }
 };
 
 //functions

@@ -15,8 +15,7 @@ Sphere::Sphere(float radius, float numSectors, float numStacks)
 void Sphere::buildVertices ()
 {
     //clear vertices vector
-    std::vector<Vector3f>().swap(vertices);
-    std::vector<Vector3f>().swap(color);
+    std::vector<Vertex>().swap(vertices);
     std::vector<float>().swap(vertexVector);
 
     float psihAngle {90};
@@ -27,9 +26,8 @@ void Sphere::buildVertices ()
     
     //top
     Vector3f topVertices {0, 1, 0};
-    Vector3f topColor {1, 0, 0};
-    vertices.push_back(topVertices);
-    color.push_back(topColor);
+    Vertex vert {topVertices};
+    vertices.push_back(vert);
     vertexVector.push_back(0);
     vertexVector.push_back(1);
     vertexVector.push_back(0);
@@ -44,14 +42,14 @@ void Sphere::buildVertices ()
         float psiRad {psihAngle * (pi/180)};
         float y {radius*std::sin(psiRad)};
         float xz {radius*std::cos(psiRad)};
-        Vector3f sectionColor {((float)std::rand()/RAND_MAX), ((float)std::rand()/RAND_MAX), ((float)std::rand()/RAND_MAX)};
         for (int j = 0; j < numSectors; j++) {
             float thetaRad {thetaAngle * (pi/180)};
             float x {xz*std::sin(thetaRad)};
             float z {xz*std::cos(thetaRad)};
 
             Vector3f vertexData {x, y, z};
-            vertices.push_back(vertexData);
+            Vertex vert2 {vertexData};
+            vertices.push_back(vert2);
 
             vertexVector.push_back(x);
             vertexVector.push_back(y);
@@ -60,7 +58,6 @@ void Sphere::buildVertices ()
             // vertexVector.push_back(sectionColor.y);
             // vertexVector.push_back(sectionColor.z);
 
-            color.push_back(sectionColor);
             thetaAngle += thetaCountBy;
             count += 1;
         }
@@ -69,9 +66,8 @@ void Sphere::buildVertices ()
 
     //bottom
     Vector3f botVertices {0, -1, 0};
-    Vector3f botColor {0, 0, 1};
-    vertices.push_back(botVertices);
-    color.push_back(botColor);
+    Vertex vert3 {botVertices};
+    vertices.push_back(vert3);
     vertexVector.push_back(0);
     vertexVector.push_back(-1);
     vertexVector.push_back(0);
