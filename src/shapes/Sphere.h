@@ -24,6 +24,7 @@ class Sphere
     
         void buildVertices();
         void generateTriangles();
+        void prepareVbo();
 
     public:
         Sphere(float radius, float numSectors, float numStacks);

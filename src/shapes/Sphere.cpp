@@ -16,7 +16,6 @@ void Sphere::buildVertices ()
 {
     //clear vertices vector
     std::vector<Vertex>().swap(vertices);
-    std::vector<float>().swap(vertexVector);
 
     float psihAngle {90};
     float thetaAngle {0};
@@ -28,9 +27,6 @@ void Sphere::buildVertices ()
     Vector3f topVertices {0, 1, 0};
     Vertex vert {topVertices};
     vertices.push_back(vert);
-    vertexVector.push_back(0);
-    vertexVector.push_back(1);
-    vertexVector.push_back(0);
     count += 1;
 
     //middle section
@@ -48,10 +44,6 @@ void Sphere::buildVertices ()
             Vertex vert2 {vertexData};
             vertices.push_back(vert2);
 
-            vertexVector.push_back(x);
-            vertexVector.push_back(y);
-            vertexVector.push_back(z);
-
             thetaAngle += thetaCountBy;
             count += 1;
         }
@@ -62,9 +54,6 @@ void Sphere::buildVertices ()
     Vector3f botVertices {0, -1, 0};
     Vertex vert3 {botVertices};
     vertices.push_back(vert3);
-    vertexVector.push_back(0);
-    vertexVector.push_back(-1);
-    vertexVector.push_back(0);
     count += 1;
 }
 
@@ -233,8 +222,21 @@ void Sphere::generateTriangles()
     }
 }
 
+void Sphere::prepareVbo()
+{
+    std::vector<float>().swap(vertexVector);
+
+    for (Vertex& vertex:vertices) {
+        vertexVector.push_back(vertex.vertices.x);
+        vertexVector.push_back(vertex.vertices.y);
+        vertexVector.push_back(vertex.vertices.z);
+    }
+
+}
+
 void Sphere::draw()
 {
     buildVertices();
     generateTriangles();
+    prepareVbo();
 }
