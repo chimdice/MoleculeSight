@@ -11,9 +11,9 @@ void main()
 {
     float result = dot(light, aNorm);
     if (result > 0) {
-        scale = result;
+        scale = 1;
     } else {
-        scale = 0;
+        scale = 1 + result*0.2;
     }
     gl_Position = camera*model*vec4(aPos, 1.0);
 }

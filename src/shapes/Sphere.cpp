@@ -232,10 +232,14 @@ void Sphere::prepareVbo()
         vertexVector.push_back(vertex.vertices.z);
 
         vertex.updateNormalVector();
+        //std::cout << vertex.normal.x<<" "<< vertex.normal.y<<" "<< vertex.normal.z<<'\n';
+        Vector3f normNormalized = NormalizeVector(vertex.normal);
+        //std::cout << normNormalized.x<<" "<< normNormalized.y<<" "<< normNormalized.z<<'\n';
+        //std::cout << '\n';
 
-        vertexVector.push_back(vertex.normal.x);
-        vertexVector.push_back(vertex.normal.y);
-        vertexVector.push_back(vertex.normal.z);
+        vertexVector.push_back(normNormalized.x);
+        vertexVector.push_back(normNormalized.y);
+        vertexVector.push_back(normNormalized.z);
 
     }
 
