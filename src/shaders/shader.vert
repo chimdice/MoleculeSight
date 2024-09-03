@@ -1,9 +1,9 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNorm;
+layout (location = 2) in mat4 model;
 
 uniform mat4 camera;
-uniform mat4 model;
 uniform vec3 light;
 out float scale;
 

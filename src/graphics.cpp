@@ -76,65 +76,27 @@ static void RenderCB ()
     unsigned int shaderProgram {CreateShaders(vertexShaderFile, fragmentShaderFile)};
 
     //model matrices
-    Matrix4 model1 {1.0f};
-    Vector3f translate1{-2, 0, 0};
-    MatrixTransform modelTransform {model1};
-    modelTransform.translate(translate1);
-    Matrix4 newModel1 = modelTransform.getMatrix();
-
-    Matrix4 model2 {1.0f};
-    Vector3f translate2{2, 0, 0};
-    MatrixTransform modelTransform2 {model2};
-    modelTransform2.translate(translate2);
-    Matrix4 newModel2 = modelTransform2.getMatrix();
+    std::vector<float> models {
+        1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -2.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 2.0f, 0.0f, 0.0f, 1.0f,
+        };
 
     glUseProgram(shaderProgram);
 
     windowCamera.addShader(shaderProgram);
     windowCamera.view();
 
-    //lighting
-    std::vector<float> lightVertices = {
-    // front
-    -1.0, -1.0,  1.0,
-     1.0, -1.0,  1.0,
-     1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    // back
-    -1.0, -1.0, -1.0,
-     1.0, -1.0, -1.0,
-     1.0,  1.0, -1.0,
-    -1.0,  1.0, -1.0
-  };
-
-  std::vector<int> lightIndex = {
-		// front
-		0, 1, 2,
-		2, 3, 0,
-		// right
-		1, 5, 6,
-		6, 2, 1,
-		// back
-		7, 6, 5,
-		5, 4, 7,
-		// left
-		4, 0, 3,
-		3, 7, 4,
-		// bottom
-		4, 5, 1,
-		1, 0, 4,
-		// top
-		3, 2, 6,
-		6, 7, 3
-	};
 
     GLuint vertexVbo {0};
     GLuint ibo {0};
     GLuint vao {0};
+    GLuint modelVbo {0};
 
+    //create vao
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    //create bos
     glGenBuffers(1, &vertexVbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVbo);
     glBufferData(GL_ARRAY_BUFFER, b1.size()*sizeof(float), b1.data(), GL_STATIC_DRAW);
@@ -150,15 +112,35 @@ static void RenderCB ()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)0 + sizeof(float)*3);
 
-    int modelLocation {glGetUniformLocation(shaderProgram, "model")};
-    glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &newModel1.matrix[0]);
+
+    glGenBuffers(1, &modelVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
+    glBufferData(GL_ARRAY_BUFFER, models.size()*sizeof(float), models.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
+    glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0);
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0+sizeof(float)*4);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0+sizeof(float)*8);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0+sizeof(float)*12);
+    glVertexAttribDivisor(5, 1);
 
     int lightLocation {glGetUniformLocation(shaderProgram, "light")};
     glUniform3fv(lightLocation, 1, &light[0]);
 
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, NULL);
+    glDrawElementsInstanced(GL_TRIANGLES, b2.size(), GL_UNSIGNED_INT, 0, 2);
     glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(5);
 
     glutSwapBuffers();
 }
