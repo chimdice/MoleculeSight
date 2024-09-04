@@ -46,4 +46,40 @@ void Mesh::render()
     glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(4);
     glDisableVertexAttribArray(5);
-};
+}
+
+void Mesh::fillModelVector()
+{
+    std::vector<float>().swap(models);
+
+    for (Matrix4& model: allModelMatrix) {
+        for (int i = 0; i < 16; i++) {
+            models.push_back(model.matrix[i]);
+        }
+    }
+}
+
+void Mesh::prepareVbo()
+{
+    std::vector<float>().swap(shapeVertices);
+
+    for (Vertex& vertex:allVertex) {
+        shapeVertices.push_back(vertex.vertices.x);
+        shapeVertices.push_back(vertex.vertices.y);
+        shapeVertices.push_back(vertex.vertices.z);
+
+        vertex.updateNormalVector();
+        Vector3f normNormalized = NormalizeVector(vertex.normal);
+
+        shapeVertices.push_back(normNormalized.x);
+        shapeVertices.push_back(normNormalized.y);
+        shapeVertices.push_back(normNormalized.z);
+
+    }
+
+}
+
+void Mesh::addModelTransformation(Matrix4 matrix)
+{
+    allModelMatrix.push_back(matrix);
+}

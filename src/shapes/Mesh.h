@@ -5,11 +5,11 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <vector>
-#include "./Math3d.h"
+#include "../Math3d.h"
 
 class Mesh
 {
-    private:
+    protected:
         std::vector<float> shapeVertices {};
         std::vector<int> shapeIndices {};
         std::vector<Vertex> allVertex {};
@@ -24,6 +24,24 @@ class Mesh
 
     public:
         void render();
+        void fillModelVector();
+        void prepareVbo();
+        void addModelTransformation(Matrix4 matrix);
+
+        std::vector<float> getVertices ()
+        {
+            return shapeVertices;
+        }
+
+        std::vector<float> getModels ()
+        {
+            return models;
+        }
+
+        std::vector<int> getIndices ()
+        {
+            return shapeIndices;
+        }
 };
 
 #endif
