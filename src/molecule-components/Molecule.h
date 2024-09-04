@@ -10,6 +10,7 @@
 #include "torsion3D.cpp"
 #include "../shapes/Sphere.h"
 #include "../shapes/Sphere.cpp"
+#include "../utility/MatrixTransform.cpp"
 
 
 class Molecule
@@ -17,6 +18,7 @@ class Molecule
     private:
         std::vector<Atom> atoms {};
         std::map<std::string, Atom> atomName {};
+        std::vector<Matrix4> atomTransformations {};
 
         std::map<int,std::vector<int>> bondInfo {};
         std::map<int,std::vector<bond3D>> bondNetwork {};
@@ -36,7 +38,6 @@ class Molecule
         void bondLength(int pos1, int pos2);
         void bondAngle(int pos1, int pos2, int pos3);
         void torsionAngle(int pos1, int pos2, int pos3, int pos4);
-        void createMolecule();
 
 
         // std::string getSequence ()

@@ -30,6 +30,16 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         std::vector<bond3D> vector1 {};
         std::vector<int> vector2 {};
 
+        //create sphere transformation
+        Matrix4 atomModel {1.0f};
+        Vector3f atomTranslate {atoms[i].getXPosition(),atoms[i].getYPosition(), atoms[i].getZPosition()};
+        Vector3f atomScale {atoms[i].getRadius()};
+        MatrixTransform modelTransfrom {atomModel};
+        modelTransfrom.translate(atomTranslate);
+        modelTransfrom.scale(atomScale);
+        Matrix4 atomModelFinal = modelTransfrom.getMatrix();
+        atomTransformations.push_back(atomModelFinal);
+
         for (int j = 0; j < numAtoms; j++)
         {
             double xDiff {atoms[i].getXPosition() - atoms[j].getXPosition()};
@@ -130,26 +140,4 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
     } else {
         std::cout<< "no torsion angle exisits \n";
     }
-}
-
-void Molecule::createMolecule ()
-{
-    int num {0};
-
-    //creating spheres
-    for (Atom& atom: atoms) {
-        Sphere atomSphere {atom.getRadius(), 10, 10};
-        atomSphere.draw();
-        
-        std::vector<float> tempVertex {atomSphere.getVertex()};
-        std::vector<int> tempVertexIndex {atomSphere.getVertexIndex()};
-        int pos {1};
-
-        atomsVertexData.push_back(tempVertex);
-        atomsVertexIndex.push_back(tempVertexIndex);
-        num += atomSphere.getNumTriangles();
-        atomsVertexSize.push_back(atomSphere.getVertexBufferSize());
-        atomsIndexSize.push_back(atomSphere.getIndexBufferSize());
-    }
-
 }
