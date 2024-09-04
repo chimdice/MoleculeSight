@@ -10,7 +10,7 @@
 #include "torsion3D.cpp"
 #include "../shapes/Sphere.h"
 #include "../shapes/Sphere.cpp"
-#include "../utility/MatrixTransform.cpp"
+#include "../utility/Camera.cpp"
 
 
 class Molecule
@@ -30,6 +30,8 @@ class Molecule
         std::vector<float> atomsVertexSize {};
         std::vector<float> atomsIndexSize {};
 
+        Sphere sphere {1.0f, 20, 20, 0};
+
     
     public:
         Molecule (std::vector<Atom> &atomList);
@@ -38,12 +40,7 @@ class Molecule
         void bondLength(int pos1, int pos2);
         void bondAngle(int pos1, int pos2, int pos3);
         void torsionAngle(int pos1, int pos2, int pos3, int pos4);
-
-
-        // std::string getSequence ()
-        // {
-        //     return sequence;
-        // }
+        void render();
 
         int getMass ()
         {

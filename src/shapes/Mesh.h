@@ -27,6 +27,10 @@ class Mesh
         void fillModelVector();
         void prepareVbo();
         void addModelTransformation(Matrix4 matrix);
+        void addNumInstances()
+        {
+            numInstances += 1;
+        }
 
         std::vector<float> getVertices ()
         {

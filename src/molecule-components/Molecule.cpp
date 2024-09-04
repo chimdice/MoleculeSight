@@ -39,6 +39,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         modelTransfrom.scale(atomScale);
         Matrix4 atomModelFinal = modelTransfrom.getMatrix();
         atomTransformations.push_back(atomModelFinal);
+        sphere.addNumInstances();
 
         for (int j = 0; j < numAtoms; j++)
         {
@@ -140,4 +141,15 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
     } else {
         std::cout<< "no torsion angle exisits \n";
     }
+}
+
+void Molecule::render()
+{
+    for(Matrix4& mat:atomTransformations) {
+        sphere.addModelTransformation(mat);
+    }
+    sphere.fillModelVector();
+    sphere.draw();
+    sphere.prepareVbo();
+    sphere.render();
 }

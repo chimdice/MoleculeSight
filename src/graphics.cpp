@@ -2,11 +2,8 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <vector>
-#include "utility/Camera.cpp"
 #include "utility/utility.h"
-//#include "molecule-components/Molecule.cpp"
-#include "shapes/Sphere.cpp"
-
+#include "molecule-components/Molecule.cpp"
 
 float width {800.0f};
 float height {600.0f};
@@ -31,10 +28,10 @@ float yaw {90.0f};
 float pitch {0.0f};
 
 //Molecule
-// Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
-// std::vector<Atom> hs {h1};
-// Molecule molH (hs);
-// std::vector<Molecule> allMol {molH};
+Atom h1 (1, 1, 1, 0.37, 1, -2, 0, 0);
+Atom h2 (1, 1, 1, 0.37, 1, 2, 0, 0);
+std::vector<Atom> hs {h1, h2};
+Molecule molH (hs);
 
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
@@ -64,25 +61,7 @@ static void RenderCB ()
     int lightLocation {glGetUniformLocation(shaderProgram, "light")};
     glUniform3fv(lightLocation, 1, &light[0]);
 
-    Matrix4 model1 {1.0f};
-    MatrixTransform modelTranfrom1 {model1};
-    Vector3f translate1 {2.0f, 0.0f, 0.0f};
-    modelTranfrom1.translate(translate1);
-    Matrix4 model1Final = modelTranfrom1.getMatrix();
-
-    Matrix4 model2 {1.0f};
-    MatrixTransform modelTranfrom2 {model2};
-    Vector3f translate2 {-2.0f, 0.0f, 0.0f};
-    modelTranfrom2.translate(translate2);
-    Matrix4 model2Final = modelTranfrom2.getMatrix();
-
-    Sphere sphere {1, 20, 20, 2};
-    sphere.addModelTransformation(model1Final);
-    sphere.addModelTransformation(model2Final);
-    sphere.fillModelVector();
-    sphere.draw();
-    sphere.prepareVbo();
-    sphere.render();
+    molH.render();
 
     glutSwapBuffers();
 }
