@@ -1,0 +1,30 @@
+#ifndef CYLINDER_H
+#define CYLINDER_H
+
+#include <iostream>
+#include <vector>
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include "../Math3d.h"
+#include "../utility/utility.h"
+#include "Mesh.cpp"
+
+class Cylinder : public Mesh
+{
+    private:
+        float radius {};
+        float numSectors {};
+        float numStacks {};
+        float pi {3.141529};
+        float length {};
+    
+        void buildVertices();
+        void generateTriangles();
+
+    public:
+        Cylinder(float radius, float length, float numSectors, float numStacks, int instances);
+        //void draw();
+
+};
+
+#endif
