@@ -12,7 +12,6 @@ class Cylinder : public Mesh
     private:
         float radius {};
         float numSectors {};
-        float numStacks {};
         float pi {3.141529};
         float length {};
     
@@ -20,8 +19,8 @@ class Cylinder : public Mesh
         void generateTriangles();
 
     public:
-        Cylinder(float radius, float length, float numSectors, float numStacks, int instances);
-        //void draw();
+        Cylinder(float radius, float length, float numSectors, int instances);
+        void draw();
 
 };
 

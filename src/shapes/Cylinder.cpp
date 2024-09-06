@@ -1,11 +1,10 @@
 #include "Cylinder.h"
 
-Cylinder::Cylinder(float radius, float length, float numSectors, float numStacks, int instances)
+Cylinder::Cylinder(float radius, float length, float numSectors, int instances)
 {
     this->radius=radius;
     this->length=length;
     this->numSectors=numSectors;
-    this->numStacks=numStacks;
     this->numInstances=instances;
 }
 
@@ -17,7 +16,7 @@ void Cylinder::buildVertices()
     float angle {0};
 
     
-    for (int j; j < numSectors; j++) {
+    for (int j=0; j < numSectors; j++) {
         float x {radius * std::cos(angle*(pi/180))};
         float y {radius * std::sin(angle*(pi/180))};
 
@@ -25,7 +24,7 @@ void Cylinder::buildVertices()
         Vertex vertex1 {v1};
         allVertex.push_back(vertex1);
 
-        Vector3f v2 {x, y, length};
+        Vector3f v2 {x, y, 1};
         Vertex vertex2 {v2};
         allVertex.push_back(vertex2);
 
@@ -66,4 +65,10 @@ void Cylinder::generateTriangles()
     shapeIndices.push_back(k1);
     shapeIndices.push_back(1);
     shapeIndices.push_back(k2);
+}
+
+void Cylinder::draw()
+{
+    buildVertices();
+    generateTriangles();
 }

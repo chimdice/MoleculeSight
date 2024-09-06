@@ -137,11 +137,17 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
 
 void Molecule::render()
 {
-    for(Matrix4& mat:atomTransformations) {
-        sphere.addModelTransformation(mat);
-    }
-    sphere.fillModelVector();
-    sphere.draw();
-    sphere.prepareVbo();
-    sphere.render();
+    // for(Matrix4& mat:atomTransformations) {
+    //     sphere.addModelTransformation(mat);
+    // }
+    // sphere.fillModelVector();
+    // sphere.draw();
+    // sphere.prepareVbo();
+    // sphere.render();
+
+    cyl.addModelTransformation(cylModelTest);
+    cyl.fillModelVector();
+    cyl.draw();
+    cyl.prepareVbo();
+    cyl.render();
 }

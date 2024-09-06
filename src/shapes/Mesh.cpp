@@ -71,9 +71,9 @@ void Mesh::prepareVbo()
         vertex.updateNormalVector();
         Vector3f normNormalized = NormalizeVector(vertex.normal);
 
-        shapeVertices.push_back(normNormalized.x);
-        shapeVertices.push_back(normNormalized.y);
-        shapeVertices.push_back(normNormalized.z);
+        shapeVertices.push_back(0);
+        shapeVertices.push_back(1);
+        shapeVertices.push_back(0);
 
     }
 

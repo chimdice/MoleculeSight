@@ -13,6 +13,7 @@
 #include "../shapes/Sphere.h"
 #include "../shapes/Cylinder.h"
 #include "../utility/MatrixTransform.h"
+#include "../Math3d.h"
 
 class Molecule
 {
@@ -32,6 +33,8 @@ class Molecule
         std::vector<float> atomsIndexSize {};
 
         Sphere sphere {1.0f, 20, 20, 0};
+        Cylinder cyl {1.0f, 1.0f, 10, 1};
+        Matrix4 cylModelTest {1.0f};
 
     
     public:
