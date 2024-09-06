@@ -21,6 +21,7 @@ class Molecule
         std::vector<Atom> atoms {};
         std::map<std::string, Atom> atomName {};
         std::vector<Matrix4> atomTransformations {};
+        std::vector<Matrix4> bondTransformations {};
 
         std::map<int,std::vector<int>> bondInfo {};
         std::map<int,std::vector<bond3D>> bondNetwork {};
@@ -33,7 +34,7 @@ class Molecule
         std::vector<float> atomsIndexSize {};
 
         Sphere sphere {1.0f, 20, 20, 0};
-        Cylinder cyl {1.0f, 1.0f, 10, 1};
+        Cylinder cyl {1.0f, 1.0f, 10, 0};
         Matrix4 cylModelTest {1.0f};
 
     

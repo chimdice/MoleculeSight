@@ -219,4 +219,12 @@ inline float DotProduct(Vector3f v1, Vector3f v2)
     return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 
+inline float angleTwoVect(Vector3f v1, Vector3f v2)
+{
+    float v1Len {std::sqrt(std::pow(v1.x, 2)+std::pow(v1.y, 2)+std::pow(v1.z, 2))};
+    float v2Len {std::sqrt(std::pow(v2.x, 2)+std::pow(v2.y, 2)+std::pow(v2.z, 2))};
+    float dot {DotProduct(v1 , v2)};
+
+    return std::acos(dot/(v1Len*v2Len)) * (180/3.1415);
+}
 #endif

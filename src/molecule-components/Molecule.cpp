@@ -25,7 +25,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         //create sphere transformation
         Matrix4 atomModel {1.0f};
         Vector3f atomTranslate {atoms[i].getXPosition(),atoms[i].getYPosition(), atoms[i].getZPosition()};
-        Vector3f atomScale {atoms[i].getRadius()};
+        Vector3f atomScale {atoms[i].getRadius()/10};
         MatrixTransform modelTransfrom {atomModel};
         modelTransfrom.translate(atomTranslate);
         modelTransfrom.scale(atomScale);
@@ -46,6 +46,22 @@ Molecule::Molecule (std::vector<Atom> &atomList)
                 bond3D bondVector {xDiff, yDiff, zDiff};
                 vector1.push_back(bondVector);
                 vector2.push_back(j);
+
+                //create bond cylinder
+                Matrix4 bondModel {1.0f};
+
+                Vector3f scale {0, 0, 0.1};
+                Vector3f bondVec {xDiff, yDiff, zDiff};
+                Vector3f origin {0, 0, 1};
+                Vector3f ortho = NormalizeVector(crossProduct(bondVec, origin));
+                float angle {angleTwoVect(bondVec, origin)};
+
+                MatrixTransform bondTransform (bondModel);
+                //bondTransform.scale(scale);
+                bondTransform.rotate(ortho, angle);
+                Matrix4 bondModelFinal = bondTransform.getMatrix();
+                bondTransformations.push_back(bondModelFinal);
+                cyl.addNumInstances();
             }
         }
 
@@ -137,15 +153,17 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
 
 void Molecule::render()
 {
-    // for(Matrix4& mat:atomTransformations) {
-    //     sphere.addModelTransformation(mat);
-    // }
-    // sphere.fillModelVector();
-    // sphere.draw();
-    // sphere.prepareVbo();
-    // sphere.render();
+    for(Matrix4& mat:atomTransformations) {
+        sphere.addModelTransformation(mat);
+    }
+    sphere.fillModelVector();
+    sphere.draw();
+    sphere.prepareVbo();
+    sphere.render();
 
-    cyl.addModelTransformation(cylModelTest);
+    for(Matrix4& mat2:bondTransformations) {
+        cyl.addModelTransformation(mat2);
+    }
     cyl.fillModelVector();
     cyl.draw();
     cyl.prepareVbo();
