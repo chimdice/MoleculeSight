@@ -149,7 +149,7 @@ struct Vertex
 
 //functions
 
-Vector3f crossProduct(Vector3f v1, Vector3f v2)
+inline Vector3f crossProduct(Vector3f v1, Vector3f v2)
 {
     float newX {v1.y*v2.z - v1.z*v2.y};
     float newY {v1.z*v2.x - v1.x*v2.z};
@@ -160,7 +160,7 @@ Vector3f crossProduct(Vector3f v1, Vector3f v2)
     return product;
 }
 
-Vector3f NormalizeVector(Vector3f v)
+inline Vector3f NormalizeVector(Vector3f v)
 {
     float l {std::sqrt((v.x*v.x)+(v.y*v.y)+(v.z*v.z))};
     float nX {v.x/l};
@@ -172,7 +172,7 @@ Vector3f NormalizeVector(Vector3f v)
     
 }
 
-Matrix4 Multiply4x4(float matrix[16], float matrix2[16])
+inline Matrix4 Multiply4x4(float matrix[16], float matrix2[16])
 {
     Matrix4 tempMatrix {};
     //row 1
@@ -203,7 +203,7 @@ Matrix4 Multiply4x4(float matrix[16], float matrix2[16])
 
 }
 
-Vector3f Multiply4x1(float matrix[16], Vector3f vector)
+inline Vector3f Multiply4x1(float matrix[16], Vector3f vector)
 {
     Vector3f tempVector {};
 
@@ -214,7 +214,7 @@ Vector3f Multiply4x1(float matrix[16], Vector3f vector)
     return tempVector;
 }
 
-float DotProduct(Vector3f v1, Vector3f v2)
+inline float DotProduct(Vector3f v1, Vector3f v2)
 {
     return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }

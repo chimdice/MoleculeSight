@@ -22,12 +22,12 @@ void Cylinder::buildVertices()
         float y {radius * std::sin(angle*(pi/180))};
 
         Vector3f v1 {x, y, 0};
-        Vertex vertex {v1};
-        allVertex.push_back(v1);
+        Vertex vertex1 {v1};
+        allVertex.push_back(vertex1);
 
         Vector3f v2 {x, y, length};
-        Vertex vertex {v2};
-        allVertex.push_back(v2);
+        Vertex vertex2 {v2};
+        allVertex.push_back(vertex2);
 
         angle += deltaAngle;
     }

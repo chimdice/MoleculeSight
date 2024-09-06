@@ -3,7 +3,9 @@
 #include <iostream>
 #include <vector>
 #include "utility/utility.h"
-#include "molecule-components/Molecule.cpp"
+#include "Math3d.h"
+#include "utility/Camera.h"
+#include "molecule-components/Molecule.h"
 
 float width {800.0f};
 float height {600.0f};
@@ -62,7 +64,6 @@ static void RenderCB ()
     glUniform3fv(lightLocation, 1, &light[0]);
 
     molH.render();
-
     glutSwapBuffers();
 }
 

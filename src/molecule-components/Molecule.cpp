@@ -1,12 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <map>
-#include <cmath>
-#include <algorithm>
-#include "Atom.h"
-#include "Atom.cpp"
 #include "Molecule.h"
-
 
 Molecule::Molecule (std::vector<Atom> &atomList)
 {

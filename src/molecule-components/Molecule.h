@@ -4,14 +4,15 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <cmath>
+#include <algorithm>
 #include "Atom.h"
 //#include "bond3D.cpp"
 //#include "angle3D.cpp"
 #include "torsion3D.cpp"
 #include "../shapes/Sphere.h"
-#include "../shapes/Sphere.cpp"
-#include "../utility/Camera.cpp"
-
+//#include "../shapes/Cylinder.h"
+#include "../utility/MatrixTransform.h"
 
 class Molecule
 {

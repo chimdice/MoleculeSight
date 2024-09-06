@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "../Math3d.h"
-#include "./MatrixTransform.cpp"
+#include "./MatrixTransform.h"
 
 class Camera
 {

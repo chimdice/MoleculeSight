@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-void readFile(std::string file, std::string& outputFile)
+inline void readFile(std::string file, std::string& outputFile)
 {
 
     std::ifstream inputFile;
@@ -23,7 +23,7 @@ void readFile(std::string file, std::string& outputFile)
     }
 }
 
-unsigned int CompileShaders(const std::string& shaderSourceString, unsigned int shaderType)
+inline unsigned int CompileShaders(const std::string& shaderSourceString, unsigned int shaderType)
 {
     unsigned int shader;
     const char* shaderSource {shaderSourceString.c_str()};
@@ -43,7 +43,7 @@ unsigned int CompileShaders(const std::string& shaderSourceString, unsigned int 
     return shader;
 }
 
-unsigned int CreateShaders(const std::string& vertexShader, const std::string& fragmentShader)
+inline unsigned int CreateShaders(const std::string& vertexShader, const std::string& fragmentShader)
 {
 
     unsigned int vertex {CompileShaders(vertexShader, GL_VERTEX_SHADER)};
@@ -69,7 +69,7 @@ unsigned int CreateShaders(const std::string& vertexShader, const std::string& f
     return shaderProgram;
 }
 
-float btyeSize2DVector (std::vector<std::vector<float>> vectors)
+inline float btyeSize2DVector (std::vector<std::vector<float>> vectors)
 {
     float size {0};
     float floatSize {sizeof(float)};
@@ -81,7 +81,7 @@ float btyeSize2DVector (std::vector<std::vector<float>> vectors)
     return size;
 }
 
-float btyeSize2DVector (std::vector<std::vector<int>> vectors)
+inline float btyeSize2DVector (std::vector<std::vector<int>> vectors)
 {
     float size {0};
     float intSize {sizeof(int)};
@@ -93,7 +93,7 @@ float btyeSize2DVector (std::vector<std::vector<int>> vectors)
     return size;
 }
 
-std::vector<float> fillVector (std::vector<std::vector<float>> vectors)
+inline std::vector<float> fillVector (std::vector<std::vector<float>> vectors)
 {
     std::vector<float> vIn {};
     for (std::vector<float>& v: vectors) {
@@ -104,7 +104,7 @@ std::vector<float> fillVector (std::vector<std::vector<float>> vectors)
     return vIn;
 }
 
-std::vector<int> fillVector (std::vector<std::vector<int>> vectors)
+inline std::vector<int> fillVector (std::vector<std::vector<int>> vectors)
 {
     std::vector<int> vIn {};
     for (std::vector<int>& v: vectors) {

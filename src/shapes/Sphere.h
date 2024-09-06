@@ -1,12 +1,12 @@
 #ifndef SPHERE_H
 #define SPHERE_H
+
 #include <iostream>
 #include <vector>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "../Math3d.h"
 #include "../utility/utility.h"
-#include "Mesh.cpp"
+#include "Mesh.h"
 
 class Sphere : public Mesh
 {
