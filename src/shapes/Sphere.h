@@ -5,7 +5,6 @@
 #include <vector>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "../utility/utility.h"
 #include "Mesh.h"
 
 class Sphere : public Mesh

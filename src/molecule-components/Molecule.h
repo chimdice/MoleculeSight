@@ -11,7 +11,7 @@
 //#include "angle3D.cpp"
 #include "torsion3D.cpp"
 #include "../shapes/Sphere.h"
-//#include "../shapes/Cylinder.h"
+#include "../shapes/Cylinder.h"
 #include "../utility/MatrixTransform.h"
 
 class Molecule

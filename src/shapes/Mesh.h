@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include "../Math3d.h"
+#include "../utility/utility.h"
 
 class Mesh
 {
