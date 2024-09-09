@@ -17,17 +17,26 @@ class Mesh
 
         std::vector<Matrix4> allModelMatrix {};
         std::vector<float> models {};
+        std::vector<float> colors {};
         int numInstances {};
         GLuint vao {0};
         GLuint vbo {0}; 
         GLuint ibo {0};
         GLuint modelVbo {0};
+        GLuint colorVbo {0};
 
     public:
         void render();
         void fillModelVector();
         void prepareVbo();
         void addModelTransformation(Matrix4 matrix);
+        void addColor(float r, float g, float b)
+        {
+            colors.push_back(r);
+            colors.push_back(g);
+            colors.push_back(b);
+        }
+        
         void addNumInstances()
         {
             numInstances += 1;

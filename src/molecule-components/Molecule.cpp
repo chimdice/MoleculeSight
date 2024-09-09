@@ -25,12 +25,13 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         //create sphere transformation
         Matrix4 atomModel {1.0f};
         Vector3f atomTranslate {atoms[i].getXPosition(),atoms[i].getYPosition(), atoms[i].getZPosition()};
-        Vector3f atomScale {atoms[i].getRadius()/10};
+        Vector3f atomScale {atoms[i].getRadius()/4};
         MatrixTransform modelTransfrom {atomModel};
         modelTransfrom.translate(atomTranslate);
         modelTransfrom.scale(atomScale);
         Matrix4 atomModelFinal = modelTransfrom.getMatrix();
         atomTransformations.push_back(atomModelFinal);
+        sphere.addColor(0.8, 0.5, 0.3);
         sphere.addNumInstances();
 
         for (int j = 0; j < numAtoms; j++)
@@ -43,6 +44,9 @@ Molecule::Molecule (std::vector<Atom> &atomList)
 
             if ((bondLength <= 1.2*nucelusDiff)&&(bondLength > 0))
             {
+                float meanRadius {nucelusDiff/2};
+                float xyScale {meanRadius/10};
+
                 bond3D bondVector {xDiff, yDiff, zDiff};
                 vector1.push_back(bondVector);
                 vector2.push_back(j);
@@ -50,17 +54,20 @@ Molecule::Molecule (std::vector<Atom> &atomList)
                 //create bond cylinder
                 Matrix4 bondModel {1.0f};
 
-                Vector3f scale {0, 0, 0.1};
+                Vector3f end {atoms[i].getXPosition(), atoms[i].getYPosition(), atoms[i].getZPosition()};
+                Vector3f scale {xyScale, xyScale, bondLength};
                 Vector3f bondVec {xDiff, yDiff, zDiff};
                 Vector3f origin {0, 0, 1};
                 Vector3f ortho = NormalizeVector(crossProduct(bondVec, origin));
                 float angle {angleTwoVect(bondVec, origin)};
 
                 MatrixTransform bondTransform (bondModel);
-                //bondTransform.scale(scale);
+                bondTransform.translate(end);
                 bondTransform.rotate(ortho, angle);
+                bondTransform.scale(scale);
                 Matrix4 bondModelFinal = bondTransform.getMatrix();
                 bondTransformations.push_back(bondModelFinal);
+                cyl.addColor(1, 1, 1);
                 cyl.addNumInstances();
             }
         }

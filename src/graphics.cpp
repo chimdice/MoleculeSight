@@ -30,8 +30,8 @@ float yaw {90.0f};
 float pitch {0.0f};
 
 //Molecule
-Atom h1 (1, 1, 1, 1, 1, -0.5, 0, 0);
-Atom h2 (1, 1, 1, 1, 1, 0.5, 0, 0);
+Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
+Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
 std::vector<Atom> hs {h1, h2};
 Molecule molH (hs);
 
