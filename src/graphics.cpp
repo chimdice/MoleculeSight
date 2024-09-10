@@ -1,3 +1,7 @@
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glut.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <iostream>
@@ -43,6 +47,13 @@ static void RenderCB ()
 {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ImGui_ImplGLUT_NewFrame();
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui::NewFrame();
+    ImGuiIO& io = ImGui::GetIO();
+    io.DeltaTime = 1/60;
+    io.DisplaySize.x = width;
+    io.DisplaySize.y = height;
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
     std::string fragmentShaderFilePath {"./shaders/shader.frag"};
@@ -64,6 +75,13 @@ static void RenderCB ()
     glUniform3fv(lightLocation, 1, &light[0]);
 
     molH.render();
+
+    ImGui::Begin("MoleculeSight");
+    ImGui::Text("This is a test");
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glutSwapBuffers();
 }
 
@@ -80,7 +98,7 @@ int main (int argc, char** argv)
     glutInitWindowSize(800,600);
     glutInitWindowPosition(200, 100);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
-    glutCreateWindow("MoleculeSight");
+    int window = glutCreateWindow("MoleculeSight");
     GLenum err = glewInit();
     if (GLEW_OK != err)
     {
@@ -90,11 +108,26 @@ int main (int argc, char** argv)
     fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     myInit();
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplGLUT_Init();
+    ImGuiIO& io = ImGui::GetIO();
+    io.DeltaTime = 1/60;
+    io.DisplaySize.x = width;
+    io.DisplaySize.y = height;
+    ImGui_ImplOpenGL3_Init("#version 330");
+
     glutDisplayFunc(RenderCB);
     glutKeyboardFunc(keyboardInput);
     glutMouseFunc(mouseCB);
     glutMotionFunc(mouseEvent);
     glutMainLoop();
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGLUT_Shutdown();
+    ImGui::DestroyContext();
+
     return 0;
 }
 
