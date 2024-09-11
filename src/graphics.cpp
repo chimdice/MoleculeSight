@@ -43,17 +43,18 @@ void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
 
+bool check1 {false};
+float slide {0.0f};
+
 static void RenderCB ()
 {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     ImGui_ImplGLUT_NewFrame();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
     ImGuiIO& io = ImGui::GetIO();
-    io.DeltaTime = 1/60;
-    io.DisplaySize.x = width;
-    io.DisplaySize.y = height;
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
     std::string fragmentShaderFilePath {"./shaders/shader.frag"};
@@ -76,12 +77,17 @@ static void RenderCB ()
 
     molH.render();
 
+    ImGui::SetNextWindowSize(ImVec2(width/2, height/2));
     ImGui::Begin("MoleculeSight");
-    ImGui::Text("This is a test");
+    ImGui::Text("hi");
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Checkbox("check 1", &check1);
+    ImGui::SliderFloat("slide value", &slide, 0.0f, 1.0f);
     ImGui::End();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     glutSwapBuffers();
 }
 
@@ -95,7 +101,7 @@ static void myInit ()
 int main (int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitWindowSize(800,600);
+    glutInitWindowSize(width,height);
     glutInitWindowPosition(200, 100);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
     int window = glutCreateWindow("MoleculeSight");
@@ -112,15 +118,20 @@ int main (int argc, char** argv)
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImGui_ImplGLUT_Init();
+    ImGui_ImplGLUT_InstallFuncs();
+
     ImGuiIO& io = ImGui::GetIO();
     io.DeltaTime = 1/60;
     io.DisplaySize.x = width;
     io.DisplaySize.y = height;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
     ImGui_ImplOpenGL3_Init("#version 330");
 
     glutDisplayFunc(RenderCB);
-    glutKeyboardFunc(keyboardInput);
-    glutMouseFunc(mouseCB);
+    //glutKeyboardFunc(keyboardInput);
+    //glutMouseFunc(mouseCB);
     glutMotionFunc(mouseEvent);
     glutMainLoop();
 
@@ -140,17 +151,17 @@ void keyboardInput(unsigned char key, int x, int y)
 void mouseEvent (int x, int y)
 {
     if (clickDown == GLUT_DOWN) {
-        float xDiff {x-lastX};
-        float yDiff {y-lastY};
+        // float xDiff {x-lastX};
+        // float yDiff {y-lastY};
 
-        lastX = x;
-        lastY = y;
+        // lastX = x;
+        // lastY = y;
 
-        xDiff *= sensitivity;
-        yDiff *= sensitivity;
+        // xDiff *= sensitivity;
+        // yDiff *= sensitivity;
 
 
-        windowCamera.rotate(-xDiff, -yDiff);
+        // windowCamera.rotate(-xDiff, -yDiff);
         glutPostRedisplay();
     }
 }
