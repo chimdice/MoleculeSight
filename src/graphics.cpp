@@ -77,10 +77,12 @@ static void RenderCB ()
 
     molH.render();
 
-    ImGui::SetNextWindowSize(ImVec2(width/2, height/2));
-    ImGui::Begin("MoleculeSight");
+    ImGui::SetNextWindowSize(ImVec2(width/3, height));
+    ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
+    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     ImGui::Text("hi");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImVec2 p = ImGui::GetWindowPos();
+    ImGui::Text("window pos %.1f %.1f", p.x, p.y);
     ImGui::Checkbox("check 1", &check1);
     ImGui::SliderFloat("slide value", &slide, 0.0f, 1.0f);
     ImGui::End();
@@ -118,7 +120,6 @@ int main (int argc, char** argv)
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImGui_ImplGLUT_Init();
-    ImGui_ImplGLUT_InstallFuncs();
 
     ImGuiIO& io = ImGui::GetIO();
     io.DeltaTime = 1/60;
@@ -130,8 +131,8 @@ int main (int argc, char** argv)
     ImGui_ImplOpenGL3_Init("#version 330");
 
     glutDisplayFunc(RenderCB);
-    //glutKeyboardFunc(keyboardInput);
-    //glutMouseFunc(mouseCB);
+    glutKeyboardFunc(keyboardInput);
+    glutMouseFunc(mouseCB);
     glutMotionFunc(mouseEvent);
     glutMainLoop();
 
@@ -151,17 +152,18 @@ void keyboardInput(unsigned char key, int x, int y)
 void mouseEvent (int x, int y)
 {
     if (clickDown == GLUT_DOWN) {
-        // float xDiff {x-lastX};
-        // float yDiff {y-lastY};
+        float xDiff {x-lastX};
+        float yDiff {y-lastY};
 
-        // lastX = x;
-        // lastY = y;
+        lastX = x;
+        lastY = y;
 
-        // xDiff *= sensitivity;
-        // yDiff *= sensitivity;
+        xDiff *= sensitivity;
+        yDiff *= sensitivity;
 
 
-        // windowCamera.rotate(-xDiff, -yDiff);
+        windowCamera.rotate(-xDiff, -yDiff);
+        ImGui_ImplGLUT_MotionFunc(x, y);
         glutPostRedisplay();
     }
 }
@@ -176,5 +178,6 @@ void mouseCB (int button, int state, int x, int y)
         windowCamera.updateOfov(button);
     }
 
+    ImGui_ImplGLUT_MouseFunc(button, state, x, y);
     glutPostRedisplay();
 }
