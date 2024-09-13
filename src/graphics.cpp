@@ -48,8 +48,9 @@ float slide {0.0f};
 
 static void RenderCB ()
 {
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilMask(0xFF);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ImGui_ImplGLUT_NewFrame();
     ImGui_ImplOpenGL3_NewFrame();
@@ -96,7 +97,8 @@ static void RenderCB ()
 static void myInit ()
 {
     glEnable(GL_DEPTH_TEST);
-    glCullFace(GL_BACK);
+    glEnable(GL_STENCIL_TEST);
+    //glCullFace(GL_BACK);
 }
 
 

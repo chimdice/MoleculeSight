@@ -24,6 +24,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
 
         //create sphere transformation
         Matrix4 atomModel {1.0f};
+
         Vector3f atomTranslate {atoms[i].getXPosition(),atoms[i].getYPosition(), atoms[i].getZPosition()};
         Vector3f atomScale {atoms[i].getRadius()/4};
         MatrixTransform modelTransfrom {atomModel};
@@ -31,7 +32,16 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         modelTransfrom.scale(atomScale);
         Matrix4 atomModelFinal = modelTransfrom.getMatrix();
         atomTransformations.push_back(atomModelFinal);
-        sphere.addColor(0.8, 0.5, 0.3);
+
+        Vector3f atomScale2 {outlineScale* atoms[i].getRadius()/4};
+        MatrixTransform modelTransfrom2 {atomModel};
+        modelTransfrom2.translate(atomTranslate);
+        modelTransfrom2.scale(atomScale2);
+        Matrix4 atomModelFinal2 = modelTransfrom2.getMatrix();
+        atomTransformations.push_back(atomModelFinal2);
+
+
+        sphere.addColor(0.2, 0.5, 0.3);
         sphere.addNumInstances();
 
         for (int j = 0; j < numAtoms; j++)
@@ -56,6 +66,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
 
                 Vector3f end {atoms[i].getXPosition(), atoms[i].getYPosition(), atoms[i].getZPosition()};
                 Vector3f scale {xyScale, xyScale, bondLength};
+                Vector3f scale2 {outlineScale*xyScale, outlineScale*xyScale, outlineScale*bondLength};
                 Vector3f bondVec {xDiff, yDiff, zDiff};
                 Vector3f origin {0, 0, 1};
                 Vector3f ortho = NormalizeVector(crossProduct(bondVec, origin));
@@ -67,6 +78,14 @@ Molecule::Molecule (std::vector<Atom> &atomList)
                 bondTransform.scale(scale);
                 Matrix4 bondModelFinal = bondTransform.getMatrix();
                 bondTransformations.push_back(bondModelFinal);
+
+                MatrixTransform bondTransform2 (bondModel);
+                bondTransform2.translate(end);
+                bondTransform2.rotate(ortho, angle);
+                bondTransform2.scale(scale2);
+                Matrix4 bondModelFinal2 = bondTransform2.getMatrix();
+                bondTransformations.push_back(bondModelFinal2);
+
                 cyl.addColor(1, 1, 1);
                 cyl.addNumInstances();
             }
@@ -160,16 +179,16 @@ void Molecule::torsionAngle(int pos1, int pos2, int pos3, int pos4)
 
 void Molecule::render()
 {
-    for(Matrix4& mat:atomTransformations) {
-        sphere.addModelTransformation(mat);
+    for(int i = 0; i < atomTransformations.size(); i+=2) {
+        sphere.addModelTransformation(atomTransformations[i], atomTransformations[i+1]);
     }
     sphere.fillModelVector();
     sphere.draw();
     sphere.prepareVbo();
     sphere.render();
 
-    for(Matrix4& mat2:bondTransformations) {
-        cyl.addModelTransformation(mat2);
+    for(int i = 0; i < bondTransformations.size(); i+=2) {
+        cyl.addModelTransformation(bondTransformations[i], bondTransformations[i+1]);
     }
     cyl.fillModelVector();
     cyl.draw();

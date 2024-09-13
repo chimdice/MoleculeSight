@@ -37,6 +37,8 @@ class Molecule
         Cylinder cyl {1.0f, 1.0f, 10, 0};
         Matrix4 cylModelTest {1.0f};
 
+        float outlineScale {1.10};
+
     
     public:
         Molecule (std::vector<Atom> &atomList);

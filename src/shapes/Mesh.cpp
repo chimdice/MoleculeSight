@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
-void Mesh::render()
+
+void Mesh::drawObject()
 {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -22,17 +23,15 @@ void Mesh::render()
 
     glGenBuffers(1, &colorVbo);
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, colors.size()*sizeof(float), colors.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, colorsModel.size()*sizeof(float), colorsModel.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, (void*)0);
     glVertexAttribDivisor(2, 1);
 
-
-
     glGenBuffers(1, &modelVbo);
     glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
-    glBufferData(GL_ARRAY_BUFFER, models.size()*sizeof(float), models.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, models.size()*sizeof(float), models.data(), GL_STATIC_DRAW); 
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
     glEnableVertexAttribArray(5);
@@ -56,7 +55,82 @@ void Mesh::render()
     glDisableVertexAttribArray(4);
     glDisableVertexAttribArray(5);
     glDisableVertexAttribArray(6);
+}
 
+void Mesh::drawOutline()
+{
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, shapeVertices.size()*sizeof(float), shapeVertices.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, shapeIndices.size()*sizeof(int), shapeIndices.data(), GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*6, (void*)0 + sizeof(float)*3);
+
+    glGenBuffers(1, &colorVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glBufferData(GL_ARRAY_BUFFER, colorsOutline.size()*sizeof(float), colorsOutline.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, (void*)0);
+    glVertexAttribDivisor(2, 1);
+
+    glGenBuffers(1, &modelVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
+    glBufferData(GL_ARRAY_BUFFER, outlines.size()*sizeof(float), outlines.data(), GL_STATIC_DRAW); 
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
+    glEnableVertexAttribArray(6);
+    glBindBuffer(GL_ARRAY_BUFFER, modelVbo);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0+sizeof(float)*4);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0+sizeof(float)*8);
+    glVertexAttribDivisor(5, 1);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(float)*16, (void*)0+sizeof(float)*12);
+    glVertexAttribDivisor(6, 1);
+
+    glBindVertexArray(vao);
+    glDrawElementsInstanced(GL_TRIANGLES, shapeIndices.size(), GL_UNSIGNED_INT, 0, numInstances);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(5);
+    glDisableVertexAttribArray(6);
+}
+
+
+void Mesh::render()
+{
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    //normal shape
+    glStencilFunc(GL_ALWAYS, 1, 0xFF); 
+    glStencilMask(0xFF); 
+    drawObject();
+
+    //outline
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilMask(0xFF);
+    glDisable(GL_DEPTH_TEST);
+    drawOutline();
+
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);   
+    glEnable(GL_DEPTH_TEST);  
 }
 
 void Mesh::fillModelVector()
@@ -90,7 +164,8 @@ void Mesh::prepareVbo()
 
 }
 
-void Mesh::addModelTransformation(Matrix4 matrix)
+void Mesh::addModelTransformation(Matrix4 model, Matrix4 outline)
 {
-    allModelMatrix.push_back(matrix);
+    allModelMatrix.push_back(model);
+    allOutlineMatrix.push_back(outline);
 }
