@@ -59,6 +59,7 @@ void Mesh::drawObject()
 
 void Mesh::drawOutline()
 {
+    createOutline();
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
@@ -103,7 +104,7 @@ void Mesh::drawOutline()
     glVertexAttribDivisor(6, 1);
 
     glBindVertexArray(vao);
-    glDrawElementsInstanced(GL_TRIANGLES, shapeIndices.size(), GL_UNSIGNED_INT, 0, numInstances);
+    glDrawElementsInstanced(GL_TRIANGLES, shapeIndices.size(), GL_UNSIGNED_INT, 0, numOutlines);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
@@ -168,4 +169,23 @@ void Mesh::addModelTransformation(Matrix4 model, Matrix4 outline)
 {
     allModelMatrix.push_back(model);
     allOutlineMatrix.push_back(outline);
+    outlineOption.push_back(false);
+}
+
+void Mesh::createOutline()
+{
+    std::vector<float>().swap(outlines);
+    numOutlines = 0;
+
+     for (int j = 0; j < outlineOption.size(); j++) {
+        if (outlineOption[j]) {
+            for (int i = 0; i < 16; i++) {
+                outlines.push_back(allOutlineMatrix[j].matrix[i]);
+                colorsOutline.push_back(1);
+                colorsOutline.push_back(1);
+                colorsOutline.push_back(1);
+            }
+            numOutlines += 1;
+        }
+    }
 }

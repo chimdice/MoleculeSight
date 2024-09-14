@@ -48,8 +48,6 @@ float slide {0.0f};
 
 static void RenderCB ()
 {
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilMask(0xFF);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ImGui_ImplGLUT_NewFrame();
@@ -107,7 +105,7 @@ int main (int argc, char** argv)
     glutInit(&argc, argv);
     glutInitWindowSize(width,height);
     glutInitWindowPosition(200, 100);
-    glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH|GLUT_STENCIL);
     int window = glutCreateWindow("MoleculeSight");
     GLenum err = glewInit();
     if (GLEW_OK != err)

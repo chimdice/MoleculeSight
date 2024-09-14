@@ -24,8 +24,8 @@ Molecule::Molecule (std::vector<Atom> &atomList)
 
         //create sphere transformation
         Matrix4 atomModel {1.0f};
-
         Vector3f atomTranslate {atoms[i].getXPosition(),atoms[i].getYPosition(), atoms[i].getZPosition()};
+
         Vector3f atomScale {atoms[i].getRadius()/4};
         MatrixTransform modelTransfrom {atomModel};
         modelTransfrom.translate(atomTranslate);
@@ -33,7 +33,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         Matrix4 atomModelFinal = modelTransfrom.getMatrix();
         atomTransformations.push_back(atomModelFinal);
 
-        Vector3f atomScale2 {outlineScale* atoms[i].getRadius()/4};
+        Vector3f atomScale2 {outlineScale * (atoms[i].getRadius()/4)};
         MatrixTransform modelTransfrom2 {atomModel};
         modelTransfrom2.translate(atomTranslate);
         modelTransfrom2.scale(atomScale2);

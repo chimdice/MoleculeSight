@@ -21,7 +21,10 @@ class Mesh
         std::vector<float> outlines {};
         std::vector<float> colorsModel {};
         std::vector<float> colorsOutline {};
+        std::vector<bool> outlineOption {};
+
         int numInstances {};
+        int numOutlines {};
         GLuint vao {0};
         GLuint vbo {0}; 
         GLuint ibo {0};
@@ -29,6 +32,7 @@ class Mesh
         GLuint colorVbo {0};
         void drawObject();
         void drawOutline();
+        void createOutline();
 
     public:
         void render();
@@ -40,10 +44,6 @@ class Mesh
             colorsModel.push_back(r);
             colorsModel.push_back(g);
             colorsModel.push_back(b);
-
-            colorsOutline.push_back(1);
-            colorsOutline.push_back(0);
-            colorsOutline.push_back(1);
         }
         
         void addNumInstances()
