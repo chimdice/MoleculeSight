@@ -16,7 +16,7 @@ float height {600.0f};
 // Camera
 Vector3f pos {0,0,3};
 Vector3f piv {0,0,0};
-Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, width, height);
+Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, 2*width/3, height);
 
 float light[3] {0.0f, 1.0f, 0.0f};
 
@@ -45,6 +45,7 @@ void mouseCB (int button, int state, int x, int y);
 
 bool check1 {false};
 float slide {0.0f};
+bool screenOn {false};
 
 
 static void RenderCB ()
@@ -160,7 +161,7 @@ static void RenderCB ()
 
     ImGui::SetNextWindowSize(ImVec2(width/3, height));
     ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
-    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoCollapse);
     ImGui::Text("hi");
     ImVec2 p = ImGui::GetWindowPos();
     ImGui::Text("window pos %.1f %.1f", p.x, p.y);
@@ -170,8 +171,9 @@ static void RenderCB ()
 
     ImGui::SetNextWindowSize(ImVec2(2*width/3, height));
     ImGui::SetNextWindowPos(ImVec2(0,0));
-    ImGui::Begin("Scene", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Scene", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoScrollWithMouse|ImGuiWindowFlags_NoCollapse);
     ImGui::Image((void*)ctbo, ImVec2(2*width/3, height), ImVec2(0,1), ImVec2(1,0));
+    screenOn = ImGui::IsItemHovered();
     ImGui::End();
 
     ImGui::Render();
@@ -239,7 +241,8 @@ void keyboardInput(unsigned char key, int x, int y)
 
 void mouseEvent (int x, int y)
 {
-    if (clickDown == GLUT_DOWN) {
+
+    if (clickDown == GLUT_DOWN && screenOn) {
         float xDiff {x-lastX};
         float yDiff {y-lastY};
 
@@ -251,9 +254,10 @@ void mouseEvent (int x, int y)
 
 
         windowCamera.rotate(-xDiff, -yDiff);
-        ImGui_ImplGLUT_MotionFunc(x, y);
-        glutPostRedisplay();
     }
+
+    ImGui_ImplGLUT_MotionFunc(x, y);
+    glutPostRedisplay();
 }
 
 void mouseCB (int button, int state, int x, int y)
@@ -262,7 +266,7 @@ void mouseCB (int button, int state, int x, int y)
     lastY = y;
     clickDown = state;
 
-    if (button == 3 || button == 4) {
+    if ((button == 3 || button == 4)&&screenOn) {
         windowCamera.updateOfov(button);
     }
 
