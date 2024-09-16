@@ -82,10 +82,10 @@ static void RenderCB ()
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 
-    // ImGui_ImplGLUT_NewFrame();
-    // ImGui_ImplOpenGL3_NewFrame();
-    // ImGui::NewFrame();
-    // ImGuiIO& io = ImGui::GetIO();
+    ImGui_ImplGLUT_NewFrame();
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui::NewFrame();
+    ImGuiIO& io = ImGui::GetIO();
 
     std::string vertexShaderFilePath {"./shaders/shader.vert"};
     std::string fragmentShaderFilePath {"./shaders/shader.frag"};
@@ -107,19 +107,6 @@ static void RenderCB ()
     glUniform3fv(lightLocation, 1, &light[0]);
 
     molH.render();
-
-    // ImGui::SetNextWindowSize(ImVec2(width/3, height));
-    // ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
-    // ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-    // ImGui::Text("hi");
-    // ImVec2 p = ImGui::GetWindowPos();
-    // ImGui::Text("window pos %.1f %.1f", p.x, p.y);
-    // ImGui::Checkbox("check 1", &check1);
-    // ImGui::SliderFloat("slide value", &slide, 0.0f, 1.0f);
-    // ImGui::End();
-
-    // ImGui::Render();
-    // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
@@ -164,12 +151,31 @@ static void RenderCB ()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*4, (void*)0+sizeof(float)*2);
     
     glBindVertexArray(screenVao);
-    glBindTexture(GL_TEXTURE_2D,ctbo);
+    //glBindTexture(GL_TEXTURE_2D,ctbo);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glEnable(GL_DEPTH_TEST);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+    ImGui::SetNextWindowSize(ImVec2(width/3, height));
+    ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
+    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    ImGui::Text("hi");
+    ImVec2 p = ImGui::GetWindowPos();
+    ImGui::Text("window pos %.1f %.1f", p.x, p.y);
+    ImGui::Checkbox("check 1", &check1);
+    ImGui::SliderFloat("slide value", &slide, 0.0f, 1.0f);
+    ImGui::End();
+
+    ImGui::SetNextWindowSize(ImVec2(2*width/3, height));
+    ImGui::SetNextWindowPos(ImVec2(0,0));
+    ImGui::Begin("Scene", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    ImGui::Image((void*)ctbo, ImVec2(2*width/3, height), ImVec2(0,1), ImVec2(1,0));
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     glutSwapBuffers();
 }
