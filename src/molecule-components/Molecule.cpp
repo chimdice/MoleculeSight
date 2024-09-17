@@ -41,7 +41,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         atomTransformations.push_back(atomModelFinal2);
 
 
-        sphere.addColor(0.2, 0.5, 0.3);
+        sphere.addColor(0.9, 0.1, 0.6);
         sphere.addNumInstances();
 
         for (int j = 0; j < numAtoms; j++)

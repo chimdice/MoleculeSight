@@ -169,7 +169,7 @@ void Mesh::addModelTransformation(Matrix4 model, Matrix4 outline)
 {
     allModelMatrix.push_back(model);
     allOutlineMatrix.push_back(outline);
-    outlineOption.push_back(false);
+    outlineOption.push_back(true);
 }
 
 void Mesh::createOutline()
