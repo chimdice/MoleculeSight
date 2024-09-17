@@ -33,6 +33,9 @@ class Camera
         float far {};
         unsigned int shaderProgram {};
 
+        Matrix4 viewMat {};
+        void updateViewTranslate();
+
 
 
     public:
@@ -41,7 +44,7 @@ class Camera
         void addShader(unsigned int shaderProgram);
         void view ();
         void rotate (float yawIn, float pitchIn);
-        void Init (int status);
+        void Init ();
         Vector3f shiftSide ();
 
         float getSpeed ()

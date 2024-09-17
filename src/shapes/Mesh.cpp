@@ -112,6 +112,7 @@ void Mesh::drawOutline()
     glDisableVertexAttribArray(4);
     glDisableVertexAttribArray(5);
     glDisableVertexAttribArray(6);
+    glDeleteVertexArrays(1, &vao);
 }
 
 

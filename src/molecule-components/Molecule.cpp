@@ -40,8 +40,12 @@ Molecule::Molecule (std::vector<Atom> &atomList)
         Matrix4 atomModelFinal2 = modelTransfrom2.getMatrix();
         atomTransformations.push_back(atomModelFinal2);
 
-
-        sphere.addColor(0.9, 0.1, 0.6);
+        if (i%2==0){
+            sphere.addColor(0.9, 0.1, 0.6);
+        } else {
+            sphere.addColor(0.1, 0.3, 0.8);
+        }
+       
         sphere.addNumInstances();
 
         for (int j = 0; j < numAtoms; j++)
