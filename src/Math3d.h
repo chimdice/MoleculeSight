@@ -155,7 +155,17 @@ inline Vector3f crossProduct(Vector3f v1, Vector3f v2)
     float newY {v1.z*v2.x - v1.x*v2.z};
     float newZ {v1.x*v2.y - v1.y*v2.x};
 
-    Vector3f product(newX, newY, newZ);
+    Vector3f product {};
+
+    if ((newX==0)&&(newY==0)&&(newZ==0)) {
+        product.x = v1.x;
+        product.y = v1.y;
+        product.z = v1.z;
+    } else {
+        product.x = newX;
+        product.y = newY;
+        product.z = newZ;
+    }
 
     return product;
 }
