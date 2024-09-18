@@ -9,7 +9,7 @@
 #include "utility/utility.h"
 #include "Math3d.h"
 #include "utility/Camera.h"
-#include "molecule-components/Molecule.h"
+#include "molecule-components/MoleculeList.h"
 
 float width {800.0f};
 float height {600.0f};
@@ -33,11 +33,8 @@ float angle {0};
 float yaw {90.0f};
 float pitch {0.0f};
 
-//Molecule
-Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
-Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
-std::vector<Atom> hs {h1, h2};
-Molecule molH (hs);
+//MoleculeList
+MoleculeList mols {};
 
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
@@ -108,7 +105,7 @@ static void RenderCB ()
     int lightLocation {glGetUniformLocation(shaderProgram, "light")};
     glUniform3fv(lightLocation, 1, &light[0]);
 
-    molH.render();
+    mols.renderMolecules();
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
@@ -274,5 +271,12 @@ void mouseCB (int button, int state, int x, int y)
 
 void createMolecule()
 {
+    //Molecule
+    Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
+    Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
+    std::vector<Atom> hs {h1, h2};
+    Molecule molH (hs);
+    mols.addMolecule(molH);
     std::cout<<"Molecule is created \n";
+    glutPostRedisplay();
 }

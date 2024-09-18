@@ -114,7 +114,6 @@ void Camera::rotate (float yawIn, float pitchIn)
 {
 
     float dotValue {DotProduct(cameraDirection, up)};
-    std::cout << dotValue <<" and "<< pitchIn <<" and "<< yawIn << '\n';
     if (std::abs(dotValue) > 0.99)
     {
         yawIn = 0;
