@@ -1,20 +1,19 @@
 #include "Molecule.h"
 
-Molecule::Molecule (std::vector<Atom> &atomList)
+Molecule::Molecule ()
 {
-    //atoms
-    this->atoms = atomList;
+   createMolecule();
+};
 
-    //mass
-    int tempMass = {0};
-    for (Atom atom: atomList)
-    {
-        tempMass += atom.getMass();
-    }
-    this->mass = tempMass;
+void Molecule::AddAtom(Atom atom)
+{
+    atoms.push_back(atom);
+    createMolecule();
+}
 
-    //bonds
-    unsigned long numAtoms {atomList.size()};
+void Molecule::createMolecule()
+{
+    unsigned long numAtoms {atoms.size()};
     std::map<int, std::vector<int>> tempBondInfo {};
     std::map<int, std::vector<bond3D>> tempBondNetwork {};
     for (int i = 0; i < numAtoms; i++)
@@ -100,7 +99,7 @@ Molecule::Molecule (std::vector<Atom> &atomList)
     }
     this->bondInfo = tempBondInfo;
     this->bondNetwork = tempBondNetwork;
-};
+}
 
 void Molecule::printMass ()
 {

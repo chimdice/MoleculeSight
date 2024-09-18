@@ -38,10 +38,12 @@ class Molecule
         Matrix4 cylModelTest {1.0f};
 
         float outlineScale {1.10};
+        void createMolecule();
 
     
     public:
-        Molecule (std::vector<Atom> &atomList);
+        Molecule ();
+        void AddAtom (Atom atom);
         void printMass ();
         void isBonded (int pos1, int pos2);
         void bondLength(int pos1, int pos2);

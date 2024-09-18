@@ -20,3 +20,10 @@ void MoleculeList::addMolecule(Molecule mol)
         }
     }
  }
+
+ void MoleculeList::addAtomtoMolecule(int molPos, Atom atom)
+ {
+    if (molPos < allMolecules.size()) {
+        allMolecules[molPos].AddAtom(atom);
+    }
+ }

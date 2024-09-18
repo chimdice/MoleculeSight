@@ -13,6 +13,7 @@ class MoleculeList
         MoleculeList();
         void addMolecule(Molecule mol);
         void renderMolecules();
+        void addAtomtoMolecule(int molPos, Atom atom);
 };
 
 

@@ -40,10 +40,10 @@ void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
 void createMolecule();
+void AddAtom(int val);
 
-bool check1 {false};
-float slide {0.0f};
 bool screenOn {false};
+int addAt {0};
 
 
 static void RenderCB ()
@@ -162,6 +162,9 @@ static void RenderCB ()
     if (ImGui::Button("Create Molecule")) {
         createMolecule();
     }
+    if (ImGui::Button("Add atom")) {
+        AddAtom(addAt);
+    }
     ImGui::End();
 
     ImGui::SetNextWindowSize(ImVec2(2*width/3, height));
@@ -271,12 +274,22 @@ void mouseCB (int button, int state, int x, int y)
 
 void createMolecule()
 {
-    //Molecule
-    Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
-    Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
-    std::vector<Atom> hs {h1, h2};
-    Molecule molH (hs);
+    Molecule molH {};
     mols.addMolecule(molH);
     std::cout<<"Molecule is created \n";
+    glutPostRedisplay();
+}
+
+void AddAtom(int val)
+{
+    if (val == 0) {
+        Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
+        mols.addAtomtoMolecule(0, h1);
+    } else if (val == 1) {
+        Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
+        mols.addAtomtoMolecule(0, h2);
+    }
+    std::cout<<"Atom is created \n";
+    addAt += 1;
     glutPostRedisplay();
 }
