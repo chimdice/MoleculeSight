@@ -36,6 +36,7 @@ class Mesh
 
     public:
         void render();
+        void reset();
         void fillModelVector();
         void prepareVbo();
         void addModelTransformation(Matrix4 model, Matrix4 outline);

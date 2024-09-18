@@ -13,11 +13,19 @@ void Molecule::AddAtom(Atom atom)
 
 void Molecule::createMolecule()
 {
+    std::vector<Matrix4>().swap(atomTransformations);
+    std::vector<Matrix4>().swap(bondTransformations);
+    sphere.reset();
+    cyl.reset();
+
     unsigned long numAtoms {atoms.size()};
     std::map<int, std::vector<int>> tempBondInfo {};
     std::map<int, std::vector<bond3D>> tempBondNetwork {};
+    std::cout<<"\n";
+
     for (int i = 0; i < numAtoms; i++)
     {
+        std::cout<< i<< "\n";
         std::vector<bond3D> vector1 {};
         std::vector<int> vector2 {};
 
@@ -97,6 +105,7 @@ void Molecule::createMolecule()
         tempBondNetwork[i] = vector1;
         tempBondInfo[i] = vector2;
     }
+    std::cout<<"\n";
     this->bondInfo = tempBondInfo;
     this->bondNetwork = tempBondNetwork;
 }

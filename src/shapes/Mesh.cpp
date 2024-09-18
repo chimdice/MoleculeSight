@@ -190,3 +190,18 @@ void Mesh::createOutline()
         }
     }
 }
+
+void Mesh::reset()
+{
+    allModelMatrix.clear();
+    allOutlineMatrix.clear();
+    models.clear();
+    outlines.clear();
+    colorsModel.clear();
+    colorsOutline.clear();
+    outlineOption.clear();
+    shapeVertices.clear();
+
+    numInstances = 0;
+    numOutlines = 0;
+}
