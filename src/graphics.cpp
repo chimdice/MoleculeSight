@@ -42,6 +42,7 @@ Molecule molH (hs);
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
+void createMolecule();
 
 bool check1 {false};
 float slide {0.0f};
@@ -152,7 +153,6 @@ static void RenderCB ()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*4, (void*)0+sizeof(float)*2);
     
     glBindVertexArray(screenVao);
-    //glBindTexture(GL_TEXTURE_2D,ctbo);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glEnable(GL_DEPTH_TEST);
@@ -162,11 +162,9 @@ static void RenderCB ()
     ImGui::SetNextWindowSize(ImVec2(width/3, height));
     ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
     ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoCollapse);
-    ImGui::Text("hi");
-    ImVec2 p = ImGui::GetWindowPos();
-    ImGui::Text("window pos %.1f %.1f", p.x, p.y);
-    ImGui::Checkbox("check 1", &check1);
-    ImGui::SliderFloat("slide value", &slide, 0.0f, 1.0f);
+    if (ImGui::Button("Create Molecule")) {
+        createMolecule();
+    }
     ImGui::End();
 
     ImGui::SetNextWindowSize(ImVec2(2*width/3, height));
@@ -272,4 +270,9 @@ void mouseCB (int button, int state, int x, int y)
 
     ImGui_ImplGLUT_MouseFunc(button, state, x, y);
     glutPostRedisplay();
+}
+
+void createMolecule()
+{
+    std::cout<<"Molecule is created \n";
 }
