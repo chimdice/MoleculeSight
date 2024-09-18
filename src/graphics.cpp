@@ -163,7 +163,11 @@ static void RenderCB ()
         createMolecule();
     }
     if (ImGui::Button("Add atom")) {
-        AddAtom(addAt);
+        if (mols.getNumMolecules() > 0) {
+          AddAtom(addAt);  
+        } else {
+            std::cout<<"You must create molecule before adding atom! \n";
+        }
     }
     ImGui::End();
 
@@ -274,8 +278,8 @@ void mouseCB (int button, int state, int x, int y)
 
 void createMolecule()
 {
-    Molecule molH {};
-    mols.addMolecule(molH);
+    Molecule mol {};
+    mols.addMolecule(mol);
     std::cout<<"Molecule is created \n";
     glutPostRedisplay();
 }
