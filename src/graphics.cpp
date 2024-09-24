@@ -6,10 +6,13 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <vector>
+#include <json.hpp>
 #include "utility/utility.h"
 #include "Math3d.h"
 #include "utility/Camera.h"
 #include "molecule-components/MoleculeList.h"
+
+using json = nlohmann::json;
 
 float width {800.0f};
 float height {600.0f};
