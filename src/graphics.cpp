@@ -6,13 +6,15 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include <vector>
-#include <json.hpp>
+#include "./json.hpp"
 #include "utility/utility.h"
 #include "Math3d.h"
 #include "utility/Camera.h"
 #include "molecule-components/MoleculeList.h"
 
 using json = nlohmann::json;
+std::ifstream elementFile("element.json");
+json elementData = json::parse(elementFile);
 
 float width {800.0f};
 float height {600.0f};
@@ -165,13 +167,36 @@ static void RenderCB ()
     if (ImGui::Button("Create Molecule")) {
         createMolecule();
     }
-    if (ImGui::Button("Add atom")) {
-        if (mols.getNumMolecules() > 0) {
-          AddAtom(addAt);  
-        } else {
-            std::cout<<"You must create molecule before adding atom! \n";
+
+    // bool createAtom {ImGui::Button("Add atom")};
+    // if (createAtom) {
+    //     if (mols.getNumMolecules() > 0) {
+    //         //AddAtom(addAt);
+    //         int n {0};
+    //         for(auto& [key, value] : elementData.items()) {
+    //                 //ImGui::PushID(n);
+    //                 if (ImGui::Button(key.c_str())) {
+    //                     std::cout<<key<<'\n';
+    //                 }
+    //                 //ImGui::PopID();
+    //                 //n++;
+    //             }
+    //         std::cout << "created atom \n";
+
+    //     } else {
+    //         std::cout<<"You must create molecule before adding atom! \n";
+    //     }
+    // }
+
+    for(auto& [key, value] : elementData.items()) {
+        //ImGui::PushID(n);
+        if (ImGui::Button(key.c_str())) {
+            std::cout<<key<<'\n';
         }
+        //ImGui::PopID();
+        //n++;
     }
+
     ImGui::End();
 
     ImGui::SetNextWindowSize(ImVec2(2*width/3, height));
