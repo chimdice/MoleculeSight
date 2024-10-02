@@ -49,6 +49,7 @@ void AddAtom(int val);
 
 bool screenOn {false};
 int addAt {0};
+bool addAtom {false};
 
 
 static void RenderCB ()
@@ -168,34 +169,19 @@ static void RenderCB ()
         createMolecule();
     }
 
-    // bool createAtom {ImGui::Button("Add atom")};
-    // if (createAtom) {
-    //     if (mols.getNumMolecules() > 0) {
-    //         //AddAtom(addAt);
-    //         int n {0};
-    //         for(auto& [key, value] : elementData.items()) {
-    //                 //ImGui::PushID(n);
-    //                 if (ImGui::Button(key.c_str())) {
-    //                     std::cout<<key<<'\n';
-    //                 }
-    //                 //ImGui::PopID();
-    //                 //n++;
-    //             }
-    //         std::cout << "created atom \n";
+    static const char* currentAtom {NULL};
 
-    //     } else {
-    //         std::cout<<"You must create molecule before adding atom! \n";
-    //     }
-    // }
-
-    for(auto& [key, value] : elementData.items()) {
-        //ImGui::PushID(n);
-        if (ImGui::Button(key.c_str())) {
-            std::cout<<key<<'\n';
+    if (ImGui::BeginCombo("Add Atom", currentAtom)) {
+       for (auto& [key, value] : elementData.items()) {
+            bool selected {currentAtom == key.c_str()};
+            if (ImGui::Selectable(key.c_str(), currentAtom)) {
+                currentAtom = key.c_str();
+            }
         }
-        //ImGui::PopID();
-        //n++;
+        ImGui::EndCombo();
     }
+
+    
 
     ImGui::End();
 
