@@ -169,13 +169,17 @@ static void RenderCB ()
         createMolecule();
     }
 
-    static const char* currentAtom {NULL};
+    std::string currentAtom {"Tin"};
 
-    if (ImGui::BeginCombo("Add Atom", currentAtom)) {
+    if (ImGui::BeginCombo("Add Atom", currentAtom.c_str())) {
        for (auto& [key, value] : elementData.items()) {
-            bool selected {currentAtom == key.c_str()};
-            if (ImGui::Selectable(key.c_str(), currentAtom)) {
-                currentAtom = key.c_str();
+            bool selected {currentAtom == key};
+            std::cout << '\n';
+            std::cout<<selected<<'\n';
+            bool atomSelected {ImGui::Selectable(key.c_str(), selected)};
+            std::cout << key << " " << atomSelected << '\n';
+            if (atomSelected) {
+                currentAtom = key;
             }
         }
         ImGui::EndCombo();
