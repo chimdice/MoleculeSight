@@ -50,6 +50,7 @@ void AddAtom(int val);
 bool screenOn {false};
 int addAt {0};
 bool addAtom {false};
+std::string currentAtom {"Tin"};
 
 
 static void RenderCB ()
@@ -164,25 +165,21 @@ static void RenderCB ()
 
     ImGui::SetNextWindowSize(ImVec2(width/3, height));
     ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
-    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoCollapse);
+    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
     if (ImGui::Button("Create Molecule")) {
         createMolecule();
     }
 
-    std::string currentAtom {"Tin"};
 
     if (ImGui::BeginCombo("Add Atom", currentAtom.c_str())) {
-       for (auto& [key, value] : elementData.items()) {
-            bool selected {currentAtom == key};
-            std::cout << '\n';
-            std::cout<<selected<<'\n';
-            bool atomSelected {ImGui::Selectable(key.c_str(), selected)};
-            std::cout << key << " " << atomSelected << '\n';
-            if (atomSelected) {
-                currentAtom = key;
+        std::cout << "clicked add atom \n";
+        for (auto& [key, value] : elementData.items()) {
+                if (ImGui::Selectable(key.c_str(), currentAtom == key)) {
+                    currentAtom = key;
+                    std::cout << currentAtom << "\n";
+                }
             }
-        }
-        ImGui::EndCombo();
+            ImGui::EndCombo();
     }
 
     
