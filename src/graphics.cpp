@@ -166,22 +166,25 @@ static void RenderCB ()
     ImGui::SetNextWindowSize(ImVec2(width/3, height));
     ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
     ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
-    if (ImGui::Button("Create Molecule")) {
-        createMolecule();
-    }
 
+    if(ImGui::BeginTabBar("menu", ImGuiTabBarFlags_None)) {
+        if (ImGui::BeginTabItem("main")) {
+            if (ImGui::Button("Create Molecule")) {
+                createMolecule();
+            }
+            ImGui::EndTabItem();
+        }
 
-    if (ImGui::BeginCombo("Add Atom", currentAtom.c_str())) {
-        std::cout << "clicked add atom \n";
-        for (auto& [key, value] : elementData.items()) {
-                if (ImGui::Selectable(key.c_str(), currentAtom == key)) {
-                    currentAtom = key;
-                    std::cout << currentAtom << "\n";
+        if (ImGui::BeginTabItem("Add atom")) {
+            for (auto& [key, value] : elementData.items()) {
+                if (ImGui::Button(key.c_str())) {
+                    std::cout << key << "\n";
                 }
             }
-            ImGui::EndCombo();
+            ImGui::EndTabItem();
+         }
+        ImGui::EndTabBar();
     }
-
     
 
     ImGui::End();
