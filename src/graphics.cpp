@@ -165,25 +165,41 @@ static void RenderCB ()
 
     ImGui::SetNextWindowSize(ImVec2(width/3, height));
     ImGui::SetNextWindowPos(ImVec2(2*width/3,0));
-    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
+    ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
 
-    if(ImGui::BeginTabBar("menu", ImGuiTabBarFlags_None)) {
-        if (ImGui::BeginTabItem("main")) {
-            if (ImGui::Button("Create Molecule")) {
+
+    // if(ImGui::BeginTabBar("menu", ImGuiTabBarFlags_None)) {
+    //     if (ImGui::BeginTabItem("main")) {
+    //         if (ImGui::Button("Create Molecule")) {
+    //             createMolecule();
+    //         }
+    //         ImGui::EndTabItem();
+    //     }
+
+    //     if (ImGui::BeginTabItem("Add atom")) {
+    //         for (auto& [key, value] : elementData.items()) {
+    //             if (ImGui::Button(key.c_str())) {
+    //                 std::cout << key << "\n";
+    //             }
+    //         }
+    //         ImGui::EndTabItem();
+    //      }
+    //     ImGui::EndTabBar();
+    // }
+
+    if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("Create")) {
+            if (ImGui::MenuItem("Molcule")) {
                 createMolecule();
             }
-            ImGui::EndTabItem();
-        }
 
-        if (ImGui::BeginTabItem("Add atom")) {
-            for (auto& [key, value] : elementData.items()) {
-                if (ImGui::Button(key.c_str())) {
-                    std::cout << key << "\n";
-                }
+            if (ImGui::MenuItem("Atom")) {
+                std::cout << "atom created! \n";
             }
-            ImGui::EndTabItem();
-         }
-        ImGui::EndTabBar();
+
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
     }
     
 
@@ -301,6 +317,8 @@ void createMolecule()
     std::cout<<"Molecule is created \n";
     glutPostRedisplay();
 }
+
+
 
 void AddAtom(int val)
 {
