@@ -41,10 +41,13 @@ float pitch {0.0f};
 //MoleculeList
 MoleculeList mols {};
 
+bool createAtomOption {false};
+
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
 void createMolecule();
+void createAtom(bool createAtomOption);
 void AddAtom(int val);
 
 bool screenOn {false};
@@ -194,13 +197,19 @@ static void RenderCB ()
             }
 
             if (ImGui::MenuItem("Atom")) {
-                std::cout << "atom created! \n";
+                if (createAtomOption) {
+                    createAtomOption = false;
+                } else {
+                    createAtomOption = true;
+                }
             }
 
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
     }
+
+    createAtom(createAtomOption);
     
 
     ImGui::End();
@@ -318,7 +327,16 @@ void createMolecule()
     glutPostRedisplay();
 }
 
-
+void createAtom(bool createAtomOption)
+{
+    if (createAtomOption) {
+        for (auto& [key, value] : elementData.items()) {
+            if (ImGui::Button(key.c_str())) {
+                std::cout << key << "\n";
+            }
+        }
+    }
+}
 
 void AddAtom(int val)
 {
