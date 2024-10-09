@@ -171,25 +171,6 @@ static void RenderCB ()
     ImGui::Begin("MoleculeSight", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
 
 
-    // if(ImGui::BeginTabBar("menu", ImGuiTabBarFlags_None)) {
-    //     if (ImGui::BeginTabItem("main")) {
-    //         if (ImGui::Button("Create Molecule")) {
-    //             createMolecule();
-    //         }
-    //         ImGui::EndTabItem();
-    //     }
-
-    //     if (ImGui::BeginTabItem("Add atom")) {
-    //         for (auto& [key, value] : elementData.items()) {
-    //             if (ImGui::Button(key.c_str())) {
-    //                 std::cout << key << "\n";
-    //             }
-    //         }
-    //         ImGui::EndTabItem();
-    //      }
-    //     ImGui::EndTabBar();
-    // }
-
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Create")) {
             if (ImGui::MenuItem("Molcule")) {
@@ -332,7 +313,11 @@ void createAtom(bool createAtomOption)
     if (createAtomOption) {
         for (auto& [key, value] : elementData.items()) {
             if (ImGui::Button(key.c_str())) {
-                std::cout << key << "\n";
+                if (value.contains("radius")) {
+                    std::cout << key <<" has radius! \n";
+                } else {
+                    std::cout << key <<" cannot be created \n";
+                }
             }
         }
     }
