@@ -58,7 +58,7 @@ void AddAtom(int val);
 bool screenOn {false};
 int addAt {0};
 bool addAtom {false};
-std::string currentAtom {"Tin"};
+std::string currentAtom {"Carbon"};
 
 
 static void RenderCB ()
@@ -188,6 +188,7 @@ static void RenderCB ()
                 } else {
                     selectAtomOption = true;
                 }
+                glutPostRedisplay();
             }
 
             ImGui::EndMenu();
@@ -197,7 +198,6 @@ static void RenderCB ()
 
     selectAtom();
     createAtom(selectedRadius);
-    std::cout << selectAtomOption << "\n";
     
 
     ImGui::End();
@@ -269,6 +269,7 @@ int main (int argc, char** argv)
 void keyboardInput(unsigned char key, int x, int y)
 {
     windowCamera.updatePosition(key);
+    ImGui_ImplGLUT_KeyboardFunc(key, x, y);
     glutPostRedisplay();
 }
 
@@ -319,14 +320,11 @@ void selectAtom()
 {
     if (selectAtomOption) {
         for (auto& [key, value] : elementData.items()) {
-            if (ImGui::Button(key.c_str())) {
-                if (value.contains("radius")) {
-                    std::cout << key <<" has radius! \n";
+            if (value.contains("radius")) {
+                if (ImGui::Button(key.c_str())) {
                     selectAtomOption = false;
                     createAtomOption = true;
-                    //selectedRadius = value.at("radius");
-                } else {
-                    std::cout << key <<" cannot be created \n";
+                    glutPostRedisplay();
                 }
             }
         }
@@ -336,9 +334,9 @@ void selectAtom()
 void createAtom(float selectedRadius)
 {
     if (createAtomOption) {
-        float xPosition {};
-        float yPosition {};
-        float zPosition {};
+        static float xPosition {0.0f};
+        static float yPosition {0.0f};
+        static float zPosition {0.0f};
         ImGui::InputFloat("X position", &xPosition);
         ImGui::InputFloat("Y position", &yPosition);
         ImGui::InputFloat("Z position", &zPosition);
