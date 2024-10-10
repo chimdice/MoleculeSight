@@ -41,13 +41,18 @@ float pitch {0.0f};
 //MoleculeList
 MoleculeList mols {};
 
+//Menu variables
 bool createAtomOption {false};
+bool selectAtomOption {false};
+std::string selectedAtom {};
+float selectedRadius {};
 
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
 void createMolecule();
-void createAtom(bool createAtomOption);
+void selectAtom();
+void createAtom(float selectedRadius);
 void AddAtom(int val);
 
 bool screenOn {false};
@@ -178,10 +183,10 @@ static void RenderCB ()
             }
 
             if (ImGui::MenuItem("Atom")) {
-                if (createAtomOption) {
-                    createAtomOption = false;
+                if (selectAtomOption) {
+                    selectAtomOption = false;
                 } else {
-                    createAtomOption = true;
+                    selectAtomOption = true;
                 }
             }
 
@@ -190,7 +195,9 @@ static void RenderCB ()
         ImGui::EndMenuBar();
     }
 
-    createAtom(createAtomOption);
+    selectAtom();
+    createAtom(selectedRadius);
+    std::cout << selectAtomOption << "\n";
     
 
     ImGui::End();
@@ -308,18 +315,33 @@ void createMolecule()
     glutPostRedisplay();
 }
 
-void createAtom(bool createAtomOption)
+void selectAtom()
 {
-    if (createAtomOption) {
+    if (selectAtomOption) {
         for (auto& [key, value] : elementData.items()) {
             if (ImGui::Button(key.c_str())) {
                 if (value.contains("radius")) {
                     std::cout << key <<" has radius! \n";
+                    selectAtomOption = false;
+                    createAtomOption = true;
+                    //selectedRadius = value.at("radius");
                 } else {
                     std::cout << key <<" cannot be created \n";
                 }
             }
         }
+    }
+}
+
+void createAtom(float selectedRadius)
+{
+    if (createAtomOption) {
+        float xPosition {};
+        float yPosition {};
+        float zPosition {};
+        ImGui::InputFloat("X position", &xPosition);
+        ImGui::InputFloat("Y position", &yPosition);
+        ImGui::InputFloat("Z position", &zPosition);
     }
 }
 
