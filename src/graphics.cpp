@@ -44,8 +44,11 @@ MoleculeList mols {};
 //Menu variables
 bool createAtomOption {false};
 bool selectAtomOption {false};
-std::string selectedAtom {};
 float selectedRadius {};
+float AtomProtonCount {};
+float AtomMass {};
+std::string currentAtom {};
+std::string currentSymbol {};
 
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
@@ -58,7 +61,6 @@ void AddAtom(int val);
 bool screenOn {false};
 int addAt {0};
 bool addAtom {false};
-std::string currentAtom {"Carbon"};
 
 
 static void RenderCB ()
@@ -322,6 +324,18 @@ void selectAtom()
         for (auto& [key, value] : elementData.items()) {
             if (value.contains("radius")) {
                 if (ImGui::Button(key.c_str())) {
+                    currentAtom = key;
+                    currentSymbol = value.at("symbol");
+
+                    std::string mass {value.at("mass")};
+                    AtomMass = std::stof(mass);
+
+                    std::string eleccount {value.at("protons")};
+                    AtomProtonCount = std::stof(eleccount);
+
+                    std::string rad {value.at("radius")};
+                    selectedRadius = std::stof(rad);
+
                     selectAtomOption = false;
                     createAtomOption = true;
                     glutPostRedisplay();
@@ -334,12 +348,18 @@ void selectAtom()
 void createAtom(float selectedRadius)
 {
     if (createAtomOption) {
+        ImGui::Text(currentAtom.c_str());
         static float xPosition {0.0f};
         static float yPosition {0.0f};
         static float zPosition {0.0f};
         ImGui::InputFloat("X position", &xPosition);
         ImGui::InputFloat("Y position", &yPosition);
         ImGui::InputFloat("Z position", &zPosition);
+
+        if (ImGui::Button("Submit")) {
+            Atom a (AtomProtonCount, AtomProtonCount, 4, selectedRadius/170, AtomMass, xPosition, yPosition, zPosition);
+            mols.addAtomtoMolecule(0, a);
+        }
     }
 }
 
