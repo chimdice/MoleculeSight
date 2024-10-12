@@ -1,7 +1,8 @@
 #include "Molecule.h"
 
-Molecule::Molecule ()
+Molecule::Molecule (std::string name)
 {
+    this->name = name;
    createMolecule();
 };
 

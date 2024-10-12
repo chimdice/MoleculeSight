@@ -44,6 +44,8 @@ MoleculeList mols {};
 //Menu variables
 bool createAtomOption {false};
 bool selectAtomOption {false};
+bool renderNamesCurrent {true};
+
 float selectedRadius {};
 float AtomProtonCount {};
 float AtomMass {};
@@ -57,6 +59,7 @@ void createMolecule();
 void selectAtom();
 void createAtom(float selectedRadius);
 void AddAtom(int val);
+void displayMoleculeInfo();
 
 bool screenOn {false};
 int addAt {0};
@@ -189,6 +192,7 @@ static void RenderCB ()
                     selectAtomOption = false;
                 } else {
                     selectAtomOption = true;
+                    renderNamesCurrent = false;
                 }
                 glutPostRedisplay();
             }
@@ -198,6 +202,7 @@ static void RenderCB ()
         ImGui::EndMenuBar();
     }
 
+    displayMoleculeInfo();
     selectAtom();
     createAtom(selectedRadius);
     
@@ -312,9 +317,8 @@ void mouseCB (int button, int state, int x, int y)
 
 void createMolecule()
 {
-    Molecule mol {};
+    Molecule mol {"mol1"};
     mols.addMolecule(mol);
-    std::cout<<"Molecule is created \n";
     glutPostRedisplay();
 }
 
@@ -359,6 +363,10 @@ void createAtom(float selectedRadius)
         if (ImGui::Button("Submit")) {
             Atom a (AtomProtonCount, AtomProtonCount, 4, selectedRadius/170, AtomMass, xPosition, yPosition, zPosition);
             mols.addAtomtoMolecule(0, a);
+            selectAtomOption = false;
+            createAtomOption = false;
+            renderNamesCurrent = true;
+            glutPostRedisplay();
         }
     }
 }
@@ -372,7 +380,13 @@ void AddAtom(int val)
         Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
         mols.addAtomtoMolecule(0, h2);
     }
-    std::cout<<"Atom is created \n";
     addAt += 1;
     glutPostRedisplay();
+}
+
+void displayMoleculeInfo()
+{
+    if (renderNamesCurrent){
+        mols.showMoleculeNames();
+    }
 }

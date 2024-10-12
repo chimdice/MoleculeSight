@@ -14,10 +14,14 @@
 #include "../shapes/Cylinder.h"
 #include "../utility/MatrixTransform.h"
 #include "../Math3d.h"
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glut.h"
+#include "../imgui/imgui_impl_opengl3.h"
 
 class Molecule
 {
     private:
+        std::string name {};
         std::vector<Atom> atoms {};
         std::map<std::string, Atom> atomName {};
         std::vector<Matrix4> atomTransformations {};
@@ -42,7 +46,7 @@ class Molecule
 
     
     public:
-        Molecule ();
+        Molecule (std::string name);
         void AddAtom (Atom atom);
         void printMass ();
         void isBonded (int pos1, int pos2);
@@ -86,6 +90,11 @@ class Molecule
             for (float& data: atomsIndexSize){
                 vector.push_back(data);
             }
+        }
+
+        void renderName ()
+        {
+            ImGui::Text(name.c_str());
         }
 
         

@@ -19,6 +19,13 @@ class MoleculeList
         {
             return allMolecules.size();
         }
+
+        void showMoleculeNames ()
+        {
+            for(Molecule& mol: allMolecules) {
+                mol.renderName();
+            }
+        }
 };
 
 
