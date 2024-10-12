@@ -8,6 +8,7 @@
 #include <vector>
 #include "./json.hpp"
 #include "utility/utility.h"
+#include "utility/Framebuffer.h"
 #include "Math3d.h"
 #include "utility/Camera.h"
 #include "molecule-components/MoleculeList.h"
@@ -16,13 +17,14 @@ using json = nlohmann::json;
 std::ifstream elementFile("element.json");
 json elementData = json::parse(elementFile);
 
+//screen
 float width {800.0f};
 float height {600.0f};
+
 // Camera
 Vector3f pos {0,0,3};
 Vector3f piv {0,0,0};
 Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, 2*width/3, height);
-
 float light[3] {0.0f, 1.0f, 0.0f};
 
 //speed
@@ -51,6 +53,9 @@ float AtomProtonCount {};
 float AtomMass {};
 std::string currentAtom {};
 std::string currentSymbol {};
+
+//Framebuffer
+//FrameBuffer fb {width, height};
 
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
@@ -100,6 +105,7 @@ static void RenderCB ()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    //fb.bindRenderToFBO();
 
     ImGui_ImplGLUT_NewFrame();
     ImGui_ImplOpenGL3_NewFrame();
@@ -128,6 +134,7 @@ static void RenderCB ()
     mols.renderMolecules();
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    //fb.bindFBOToScreen();
     glDisable(GL_DEPTH_TEST);
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -171,6 +178,7 @@ static void RenderCB ()
     
     glBindVertexArray(screenVao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    //fb.renderScreen();
 
     glEnable(GL_DEPTH_TEST);
     glDisableVertexAttribArray(0);
@@ -215,6 +223,7 @@ static void RenderCB ()
     ImGui::Image((void*)ctbo, ImVec2(2*width/3, height), ImVec2(0,1), ImVec2(1,0));
     screenOn = ImGui::IsItemHovered();
     ImGui::End();
+    //screenOn = fb.drawOnScreen();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -259,6 +268,8 @@ int main (int argc, char** argv)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    //fb.init();
 
     glutDisplayFunc(RenderCB);
     glutKeyboardFunc(keyboardInput);

@@ -3,6 +3,12 @@
 #include <iostream>
 #include <vector>
 
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glut.h"
+#include "../imgui/imgui_impl_opengl3.h"
+
+#include "../molecule-components/MoleculeList.h"
+
 class FrameBuffer
 {
     private:
@@ -12,6 +18,7 @@ class FrameBuffer
 
         int width {};
         int height {};
+        bool screenOn {};
 
         std::vector<float> screen {
         -1.0f, 1.0f, 0.0f, 1.0f,
@@ -25,12 +32,9 @@ class FrameBuffer
 
     public:
         FrameBuffer(int initalWidth, int initalHeight);
+        void init();
         void bindRenderToFBO();
-        void bindFBOToScreen();
+        void bindFBOToScreen(MoleculeList mols);
         void renderScreen();
-
-        GLuint getTexture()
-        {
-            return ctbo;
-        }
+        bool drawOnScreen();
 };

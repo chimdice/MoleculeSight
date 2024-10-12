@@ -4,6 +4,10 @@ FrameBuffer::FrameBuffer(int initalWidth, int initalHeight)
 {
     this->width=initalWidth;
     this->height=initalHeight;
+}
+
+void FrameBuffer::init()
+{
     //framebuffer
     GLuint fbo {0};
     glGenFramebuffers(1, &fbo);
@@ -34,12 +38,18 @@ FrameBuffer::FrameBuffer(int initalWidth, int initalHeight)
 
 void FrameBuffer::bindRenderToFBO()
 {
+    //mols.renderMolecules();
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 }
 
-void FrameBuffer::bindFBOToScreen()
+void FrameBuffer::bindFBOToScreen(MoleculeList mols)
 {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void FrameBuffer::renderScreen()
@@ -60,6 +70,18 @@ void FrameBuffer::renderScreen()
     glBindVertexArray(screenVao);
     glBindTexture(GL_TEXTURE_2D, ctbo);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glEnable(GL_DEPTH_TEST);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+}
+
+bool FrameBuffer::drawOnScreen()
+{
+    ImGui::SetNextWindowSize(ImVec2(2*width/3, height));
+    ImGui::SetNextWindowPos(ImVec2(0,0));
+    ImGui::Begin("Scene", NULL,ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoScrollWithMouse|ImGuiWindowFlags_NoCollapse);
+    ImGui::Image((void*)ctbo, ImVec2(2*width/3, height), ImVec2(0,1), ImVec2(1,0));
+    screenOn = ImGui::IsItemHovered();
+    ImGui::End();
+    return screenOn;
 }
