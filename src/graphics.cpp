@@ -13,6 +13,7 @@
 #include "utility/Camera.h"
 #include "molecule-components/MoleculeList.h"
 
+//json
 using json = nlohmann::json;
 std::ifstream elementFile("element.json");
 json elementData = json::parse(elementFile);
@@ -26,16 +27,11 @@ Vector3f pos {0,0,3};
 Vector3f piv {0,0,0};
 Camera windowCamera (pos, 60.0f, 0.1f, 1000.0f, 2*width/3, height);
 float light[3] {0.0f, 1.0f, 0.0f};
-
-//speed
 float speed {0.1f};
-
-//free cam
 float sensitivity {0.1f};
 float lastX {400};
 float lastY {300};
 int clickDown {};
-
 float angle {0};
 float yaw {90.0f};
 float pitch {0.0f};
@@ -49,10 +45,24 @@ float AtomProtonCount {};
 float AtomMass {};
 std::string currentAtom {};
 std::string currentSymbol {};
+bool screenOn {false};
+int optionRender {0};
 
 //Framebuffer
-//FrameBuffer fb {width, height};
+GLuint fbo {0};
+GLuint ctbo {0};
+GLuint rbo {0};
+std::vector<float> screen {
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
 
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+    };
+
+//functions
 void keyboardInput(unsigned char key, int x, int y);
 void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
@@ -61,48 +71,11 @@ void selectAtom();
 void createAtom();
 void displayMoleculeInfo();
 
-bool screenOn {false};
-int addAt {0};
-bool addAtom {false};
-
-int optionRender {0};
-
-
 static void RenderCB ()
 {
-    //framebuffer
-    GLuint fbo {0};
-    glGenFramebuffers(1, &fbo);
-
-    //colortexture
-    GLuint ctbo {0};
-    glGenTextures(1, &ctbo);
-    glBindTexture(GL_TEXTURE_2D, ctbo);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    //renderbuffer
-    GLuint rbo {0};
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-
-    //bind everything to the frame buffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ctbo, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cout << "frame buffer error ! \n";
-    }
-
-
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-    //fb.bindRenderToFBO();
 
     ImGui_ImplGLUT_NewFrame();
     ImGui_ImplOpenGL3_NewFrame();
@@ -131,7 +104,6 @@ static void RenderCB ()
     mols.renderMolecules();
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    //fb.bindFBOToScreen();
     glDisable(GL_DEPTH_TEST);
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -150,16 +122,6 @@ static void RenderCB ()
     unsigned int shaderProgram2 {CreateShaders(vertexShaderFile2, fragmentShaderFile2)};
     glUseProgram(shaderProgram2);
 
-    std::vector<float> screen {
-        -1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f,
-
-        -1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f, 0.0f,
-    };
-
     GLuint screenVao {0};
     glGenVertexArrays(1, &screenVao);
     glBindVertexArray(screenVao);
@@ -175,7 +137,6 @@ static void RenderCB ()
     
     glBindVertexArray(screenVao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    //fb.renderScreen();
 
     glEnable(GL_DEPTH_TEST);
     glDisableVertexAttribArray(0);
@@ -223,7 +184,6 @@ static void RenderCB ()
     ImGui::Image((void*)ctbo, ImVec2(2*width/3, height), ImVec2(0,1), ImVec2(1,0));
     screenOn = ImGui::IsItemHovered();
     ImGui::End();
-    //screenOn = fb.drawOnScreen();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -236,6 +196,29 @@ static void myInit ()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     //glCullFace(GL_BACK);
+    //framebuffer
+    glGenFramebuffers(1, &fbo);
+
+    //colortexture
+    glGenTextures(1, &ctbo);
+    glBindTexture(GL_TEXTURE_2D, ctbo);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    //renderbuffer
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+
+    //bind everything to the frame buffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ctbo, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "frame buffer error ! \n";
+    }
 }
 
 
