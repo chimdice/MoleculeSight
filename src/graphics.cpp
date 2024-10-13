@@ -44,10 +44,6 @@ float pitch {0.0f};
 MoleculeList mols {};
 
 //Menu variables
-bool createAtomOption {false};
-bool selectAtomOption {false};
-bool renderNamesCurrent {true};
-
 float selectedRadius {};
 float AtomProtonCount {};
 float AtomMass {};
@@ -62,13 +58,14 @@ void mouseEvent (int x, int y);
 void mouseCB (int button, int state, int x, int y);
 void createMolecule();
 void selectAtom();
-void createAtom(float selectedRadius);
-void AddAtom(int val);
+void createAtom();
 void displayMoleculeInfo();
 
 bool screenOn {false};
 int addAt {0};
 bool addAtom {false};
+
+int optionRender {0};
 
 
 static void RenderCB ()
@@ -192,16 +189,12 @@ static void RenderCB ()
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Create")) {
             if (ImGui::MenuItem("Molcule")) {
+                optionRender = 0;
                 createMolecule();
             }
 
             if (ImGui::MenuItem("Atom")) {
-                if (selectAtomOption) {
-                    selectAtomOption = false;
-                } else {
-                    selectAtomOption = true;
-                    renderNamesCurrent = false;
-                }
+                optionRender = 1;
                 glutPostRedisplay();
             }
 
@@ -210,10 +203,17 @@ static void RenderCB ()
         ImGui::EndMenuBar();
     }
 
-    displayMoleculeInfo();
-    selectAtom();
-    createAtom(selectedRadius);
-    
+    switch (optionRender) {
+        case 0: displayMoleculeInfo();
+        break;
+
+        case 1: selectAtom();
+        break;
+
+        case 2: createAtom();
+        break;
+
+    }    
 
     ImGui::End();
 
@@ -335,69 +335,47 @@ void createMolecule()
 
 void selectAtom()
 {
-    if (selectAtomOption) {
-        for (auto& [key, value] : elementData.items()) {
-            if (value.contains("radius")) {
-                if (ImGui::Button(key.c_str())) {
-                    currentAtom = key;
-                    currentSymbol = value.at("symbol");
+    for (auto& [key, value] : elementData.items()) {
+        if (value.contains("radius")) {
+            if (ImGui::Button(key.c_str())) {
+                currentAtom = key;
+                currentSymbol = value.at("symbol");
 
-                    std::string mass {value.at("mass")};
-                    AtomMass = std::stof(mass);
+                std::string mass {value.at("mass")};
+                AtomMass = std::stof(mass);
 
-                    std::string eleccount {value.at("protons")};
-                    AtomProtonCount = std::stof(eleccount);
+                std::string eleccount {value.at("protons")};
+                AtomProtonCount = std::stof(eleccount);
 
-                    std::string rad {value.at("radius")};
-                    selectedRadius = std::stof(rad);
+                std::string rad {value.at("radius")};
+                selectedRadius = std::stof(rad);
 
-                    selectAtomOption = false;
-                    createAtomOption = true;
-                    glutPostRedisplay();
-                }
+                optionRender = 2;
+                glutPostRedisplay();
             }
         }
     }
 }
 
-void createAtom(float selectedRadius)
+void createAtom()
 {
-    if (createAtomOption) {
-        ImGui::Text(currentAtom.c_str());
-        static float xPosition {0.0f};
-        static float yPosition {0.0f};
-        static float zPosition {0.0f};
-        ImGui::InputFloat("X position", &xPosition);
-        ImGui::InputFloat("Y position", &yPosition);
-        ImGui::InputFloat("Z position", &zPosition);
+    ImGui::Text(currentAtom.c_str());
+    static float xPosition {0.0f};
+    static float yPosition {0.0f};
+    static float zPosition {0.0f};
+    ImGui::InputFloat("X position", &xPosition);
+    ImGui::InputFloat("Y position", &yPosition);
+    ImGui::InputFloat("Z position", &zPosition);
 
-        if (ImGui::Button("Submit")) {
-            Atom a (AtomProtonCount, AtomProtonCount, 4, selectedRadius/170, AtomMass, xPosition, yPosition, zPosition);
-            mols.addAtomtoMolecule(0, a);
-            selectAtomOption = false;
-            createAtomOption = false;
-            renderNamesCurrent = true;
-            glutPostRedisplay();
-        }
+    if (ImGui::Button("Submit")) {
+        Atom a (AtomProtonCount, AtomProtonCount, 4, selectedRadius/170, AtomMass, xPosition, yPosition, zPosition);
+        mols.addAtomtoMolecule(0, a);
+        optionRender = 0;
+        glutPostRedisplay();
     }
-}
-
-void AddAtom(int val)
-{
-    if (val == 0) {
-        Atom h1 (1, 1, 1, 1, 1, 0, 0, 0);
-        mols.addAtomtoMolecule(0, h1);
-    } else if (val == 1) {
-        Atom h2 (1, 1, 1, 1, 1, 1, 1, 0);
-        mols.addAtomtoMolecule(0, h2);
-    }
-    addAt += 1;
-    glutPostRedisplay();
 }
 
 void displayMoleculeInfo()
 {
-    if (renderNamesCurrent){
-        mols.showMoleculeNames();
-    }
+    mols.showMoleculeNames();
 }
